@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,6 +23,8 @@ namespace oat\tao\model\http;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorAwareTrait;
 
 /**
  * Class Controller
@@ -31,12 +34,16 @@ use Psr\Http\Message\ServerRequestInterface;
  * @package oat\tao\model\http
  * @author Moyon Camille
  */
-abstract class Controller
+abstract class Controller implements ServiceLocatorAwareInterface
 {
     use HttpRequestHelperTrait;
     use HttpFlowTrait;
+    use ServiceLocatorAwareTrait;
 
+    /** @var ServerRequestInterface */
     protected $request;
+
+    /** @var ResponseInterface */
     protected $response;
 
     /**

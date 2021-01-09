@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.3.0-sprint103\n"
-"PO-Revision-Date: 2019-06-07T08:58:22\n"
+"Project-Id-Version: TAO 3.4.0-sprint137\n"
+"PO-Revision-Date: 2020-09-11T08:31:01\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: ja-JP\n"
@@ -148,6 +148,9 @@ msgstr ""
 msgid "A message with further instructions has been sent to your email address: %s"
 msgstr "詳しい手順とメッセージがあなたのメールアドレスに送信されました：%s"
 
+msgid "About"
+msgstr ""
+
 msgid "abs"
 msgstr ""
 
@@ -184,6 +187,9 @@ msgstr "操作"
 msgid "Add"
 msgstr "追加"
 
+msgid "Add / Edit lists"
+msgstr ""
+
 msgid "Add a CSV file"
 msgstr "CSVファイルを追加"
 
@@ -208,9 +214,6 @@ msgstr ""
 
 msgid "Adding the new resource has failed"
 msgstr ""
-
-msgid "Advanced Mode"
-msgstr "詳細モード"
 
 msgid "Advanced search, add filters"
 msgstr ""
@@ -402,10 +405,10 @@ msgstr "パスワードを変更"
 msgid "Change the sign of the current operand"
 msgstr ""
 
-msgid "Check all"
+msgid "Check All"
 msgstr "すべてチェック"
 
-msgid "Check All"
+msgid "Check all"
 msgstr "すべてチェック"
 
 msgid "Check-in"
@@ -422,9 +425,6 @@ msgstr "エクスポート形式の選択"
 
 msgid "Choose import format"
 msgstr "インポート形式の選択"
-
-msgid "City"
-msgstr ""
 
 msgid "class selected"
 msgstr "選択されたクラス"
@@ -466,6 +466,9 @@ msgid "Clear the stored variables"
 msgstr ""
 
 msgid "Close"
+msgstr ""
+
+msgid "Close dialog"
 msgstr ""
 
 msgid "Close message"
@@ -528,9 +531,6 @@ msgstr ""
 msgid "count"
 msgstr ""
 
-msgid "Country"
-msgstr ""
-
 msgid "Create"
 msgstr "作成"
 
@@ -541,9 +541,6 @@ msgid "Created"
 msgstr ""
 
 msgid "Creating report ..."
-msgstr ""
-
-msgid "Creation At"
 msgstr ""
 
 msgid "CSP Header settings were saved successfully!"
@@ -573,14 +570,17 @@ msgstr "データインポートに成功しました"
 msgid "Data imported. Some records are invalid."
 msgstr "データインポート終了。いくつかのレコードは無効です。"
 
-msgid "Data language"
+msgid "Data Language"
 msgstr "データ言語"
 
-msgid "Data Language"
+msgid "Data language"
 msgstr "データ言語"
 
 msgid "Data not imported. All records are invalid."
 msgstr "データはインポートされませんでした。すべてのレコードは無効です。"
+
+msgid "Data source URI"
+msgstr ""
 
 msgid "Date"
 msgstr "日付"
@@ -709,9 +709,6 @@ msgstr "%sクラスの編集"
 msgid "Edit Instance"
 msgstr "インスタンスの編集"
 
-msgid "Edit sources that can embed this platform in an iFrame"
-msgstr ""
-
 msgid "Element"
 msgstr "要素"
 
@@ -720,9 +717,6 @@ msgstr "要素が削除されました"
 
 msgid "Email"
 msgstr "E-メール"
-
-msgid "Email address"
-msgstr ""
 
 msgid "enabled"
 msgstr ""
@@ -752,6 +746,9 @@ msgid "Error in syntax"
 msgstr ""
 
 msgid "Error in value"
+msgstr ""
+
+msgid "Error: %s"
 msgstr ""
 
 msgid "Examples:"
@@ -870,11 +867,17 @@ msgstr ""
 msgid "Forbid for all domains"
 msgstr ""
 
+msgid "Force HTTPS on this platform"
+msgstr ""
+
 msgid "Force Release"
 msgstr "強制リリース"
 
 msgid "Forgot your password?"
 msgstr "パスワードをお忘れですか?"
+
+msgid "Form"
+msgstr ""
 
 msgid "Form data not saved."
 msgstr ""
@@ -900,6 +903,12 @@ msgstr ""
 msgid "Go Back"
 msgstr "前に戻る"
 
+msgid "go back to home page"
+msgstr ""
+
+msgid "Go to item"
+msgstr ""
+
 msgid "Height"
 msgstr "高さ"
 
@@ -908,6 +917,9 @@ msgstr "ハイ、%s<br>あなたはTAOのパスワードを忘れています"
 
 msgid "Hide detailed report"
 msgstr "詳細報告を隠す"
+
+msgid "Hide password"
+msgstr ""
 
 msgid "Highlight all"
 msgstr ""
@@ -978,10 +990,10 @@ msgstr ""
 msgid "impossible to update task status"
 msgstr ""
 
-msgid "In progress"
+msgid "In Progress"
 msgstr ""
 
-msgid "In Progress"
+msgid "In progress"
 msgstr ""
 
 msgid "Inclusive (AND)"
@@ -1059,6 +1071,9 @@ msgstr "無効なファイルサイズ（最小%1$sバイト、最大%2$sバイ�
 msgid "Invalid file type!"
 msgstr "不正なファイルタイプです"
 
+msgid "Invalid input"
+msgstr ""
+
 msgid "Invalid input for function"
 msgstr ""
 
@@ -1082,6 +1097,9 @@ msgstr ""
 
 msgid "Label"
 msgstr "ラベル"
+
+msgid "Label Path"
+msgstr ""
 
 msgid "Language"
 msgstr "言語"
@@ -1110,11 +1128,23 @@ msgstr "リスト"
 msgid "List - Multiple choice - Check box"
 msgstr "リスト - 多肢選択 - チェックボックス"
 
+msgid "List - Multiple choice - Search input"
+msgstr ""
+
 msgid "List - Single choice - Drop down"
 msgstr "リスト - 択一 - ドロップダウン"
 
 msgid "List - Single choice - Radio button"
 msgstr "リスト - 択一 - ラジオボタン"
+
+msgid "List - Single choice - Search input"
+msgstr ""
+
+msgid "List item URI duplications found"
+msgstr ""
+
+msgid "List values"
+msgstr ""
 
 msgid "ln"
 msgstr ""
@@ -1164,7 +1194,19 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
+msgid "Main Menu"
+msgstr ""
+
+msgid "Maintenance service is already installed."
+msgstr ""
+
 msgid "Maintenance service must have a persistence option."
+msgstr ""
+
+msgid "Maintenance service was installed. Platform is disabled."
+msgstr ""
+
+msgid "Maintenance service was installed. Platform is enabled."
 msgstr ""
 
 msgid "Maintenance storage driver is not set"
@@ -1206,9 +1248,6 @@ msgid "Messages"
 msgstr ""
 
 msgid "Metadata export is not available for the selected resource."
-msgstr ""
-
-msgid "Method"
 msgstr ""
 
 msgid "minutes"
@@ -1256,9 +1295,6 @@ msgstr "複数の値の区切り文字"
 
 msgid "Multiply the value by 10^x"
 msgstr ""
-
-msgid "must be numeric"
-msgstr "数値でなければなりません"
 
 msgid "Mute"
 msgstr ""
@@ -1315,6 +1351,9 @@ msgstr "ファイルが選択されていません"
 
 msgid "No files"
 msgstr "ファイルが有りません"
+
+msgid "No item found. Please try other search criteria."
+msgstr ""
 
 msgid "no label"
 msgstr "ラベルがありません"
@@ -1401,9 +1440,6 @@ msgstr ""
 msgid "Page"
 msgstr "ページ番号"
 
-msgid "Parameters"
-msgstr ""
-
 msgid "Password"
 msgstr "パスワード"
 
@@ -1426,9 +1462,6 @@ msgid "Pause"
 msgstr ""
 
 msgid "Permission denied to write in the selected class"
-msgstr ""
-
-msgid "Phone number"
 msgstr ""
 
 msgid "Play"
@@ -1464,6 +1497,9 @@ msgstr ""
 msgid "Please contact your system administrator."
 msgstr ""
 
+msgid "Please define your search in the search panel."
+msgstr ""
+
 msgid "Please download the track and listen offline."
 msgstr ""
 
@@ -1477,9 +1513,6 @@ msgid "Please provide a reason"
 msgstr "その理由を記入してください"
 
 msgid "Please report bugs, ideas, comments or feedback on the TAO Forum"
-msgstr ""
-
-msgid "Please try in %s."
 msgstr ""
 
 msgid "Please wait"
@@ -1518,9 +1551,6 @@ msgstr ""
 #, tao-public
 msgid "Properties"
 msgstr "プロパティ"
-
-msgid "Property\'s label field is required"
-msgstr "プロパティ\\'sは、ラベルフィールドが必要です"
 
 msgid "Provided URL is not valid"
 msgstr "指定されたURLは有効ではありません"
@@ -1715,6 +1745,9 @@ msgstr "保存"
 msgid "Saved."
 msgstr ""
 
+msgid "Scientific Calculator"
+msgstr ""
+
 msgid "Scope"
 msgstr "範囲"
 
@@ -1725,6 +1758,9 @@ msgid "Search %s"
 msgstr "%sを検索"
 
 msgid "Search by properties"
+msgstr ""
+
+msgid "Search Item"
 msgstr ""
 
 msgid "Search sub-classes"
@@ -1743,10 +1779,10 @@ msgstr ""
 msgid "Security settings"
 msgstr ""
 
-msgid "select"
+msgid "Select"
 msgstr "選択"
 
-msgid "Select"
+msgid "select"
 msgstr "選択"
 
 msgid "Select a class"
@@ -1795,11 +1831,11 @@ msgstr "設定を更新"
 msgid "Show detailed report"
 msgstr "詳細報告を表示する"
 
-msgid "Sign change"
+msgid "Show password"
 msgstr ""
 
-msgid "Simple Mode"
-msgstr "シンプルモード"
+msgid "Sign change"
+msgstr ""
 
 msgid "sin"
 msgstr ""
@@ -1816,6 +1852,9 @@ msgstr "サイズ"
 msgid "Some resources have not been moved: %s"
 msgstr ""
 
+msgid "Something unexpected happened."
+msgstr ""
+
 msgid "Sources that can embed this platform in an iFrame"
 msgstr ""
 
@@ -1823,9 +1862,6 @@ msgid "Square root"
 msgstr ""
 
 msgid "Start of document reached. Continuing from the end."
-msgstr ""
-
-msgid "State"
 msgstr ""
 
 msgid "Status"
@@ -1840,10 +1876,10 @@ msgstr ""
 msgid "Store the value a variable"
 msgstr ""
 
-msgid "Street"
+msgid "string"
 msgstr ""
 
-msgid "string"
+msgid "Submit"
 msgstr ""
 
 msgid "Success"
@@ -1890,6 +1926,24 @@ msgstr "TAO ホーム"
 
 msgid "TAO Login"
 msgstr "TAO ログイン"
+
+msgid "TAO platform is already on live mode since %s"
+msgstr ""
+
+msgid "TAO platform is already on maintenance mode since %s"
+msgstr ""
+
+msgid "TAO platform is live since %s."
+msgstr ""
+
+msgid "TAO platform is now live. It was in maintenance since %s"
+msgstr ""
+
+msgid "TAO platform is now under maintenance. It was in maintenance since %s"
+msgstr ""
+
+msgid "TAO platform is under maintenance since %s"
+msgstr ""
 
 msgid "Task %s has been cancelled, message was not processed."
 msgstr ""
@@ -2062,8 +2116,14 @@ msgstr "翻訳パラメータ"
 msgid "Translation saved"
 msgstr "翻訳は保存されました"
 
+msgid "Transport Layer Security"
+msgstr ""
+
 msgid "Tree - Multiple node choice "
 msgstr "ツリー - 複数ノード選択"
+
+msgid "Tree values"
+msgstr ""
 
 msgid "True"
 msgstr "正しい"
@@ -2179,11 +2239,20 @@ msgstr "アップロード"
 msgid "Upload into:"
 msgstr "アップロード先:"
 
-msgid "URL"
+msgid "URI Path"
 msgstr ""
 
 msgid "Usage: ImportRdf RDF_FILE [MODEL_ID]"
 msgstr "使用法：ImportRdf RDF_FILE [MODEL_ID]"
+
+msgid "USAGE: please provide a valid extension id as second parameter"
+msgstr ""
+
+msgid "USAGE: please provide a valid service name as first parameter"
+msgstr ""
+
+msgid "USAGE: please provide the service name as first parameter"
+msgstr ""
 
 msgid "Use a term"
 msgstr ""
@@ -2227,9 +2296,6 @@ msgstr "ユーザを保存しました"
 #, tao-public
 msgid "User Settings"
 msgstr "ユーザ設定"
-
-msgid "Username"
-msgstr ""
 
 #, tao-public
 msgid "Users"
@@ -2348,7 +2414,4 @@ msgstr "メールアドレス"
 
 msgid "Your TAO Password"
 msgstr "TAO パスワード"
-
-msgid "Zip Code"
-msgstr ""
 

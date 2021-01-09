@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,6 +21,9 @@
 
 namespace oat\tao\test\unit\model\taskQueue;
 
+use common_exception_NotFound;
+use Exception;
+use InvalidArgumentException;
 use oat\generis\test\TestCase;
 use oat\tao\model\taskQueue\Task\AbstractTask;
 use oat\tao\model\taskQueue\TaskLog;
@@ -30,14 +34,13 @@ use oat\tao\model\taskQueue\TaskLog\TaskLogCollection;
 use oat\tao\model\taskQueue\TaskLog\TasksLogsStats;
 use oat\tao\model\taskQueue\TaskLogInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use oat\generis\test\MockObject;
 
 class TaskLogTest extends TestCase
 {
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testTaskLogServiceShouldThrowExceptionWhenTaskLogBrokerOptionIsNotSet()
     {
+        $this->expectException(InvalidArgumentException::class);
         new TaskLog([]);
     }
 
@@ -106,7 +109,8 @@ class TaskLogTest extends TestCase
 
         $taskLogMock->expects($this->once())
             ->method('getBroker')
-            ->willReturn($logBrokerMock);;
+            ->willReturn($logBrokerMock);
+        ;
 
         $taskLogMock->add($taskMock, 'enqueued');
     }
@@ -167,11 +171,9 @@ class TaskLogTest extends TestCase
         $this->assertInstanceOf(TaskLogEntity::class, $model->getByIdAndUser('taskId', 'userId'));
     }
 
-    /**
-     * @expectedException  \common_exception_NotFound
-     */
     public function testGetByIdAndUserNotFound()
     {
+        $this->expectException(common_exception_NotFound::class);
         $model = $this->getTaskLogMock(true);
         $this->assertInstanceOf(TaskLogEntity::class, $model->getByIdAndUser('some task id not found', 'userId'));
     }
@@ -188,20 +190,16 @@ class TaskLogTest extends TestCase
         $this->assertTrue($model->archive($model->getByIdAndUser('taskId', 'userId')));
     }
 
-    /**
-     * @expectedException  \common_exception_NotFound
-     */
     public function testArchiveTaskNotFound()
     {
+        $this->expectException(common_exception_NotFound::class);
         $model = $this->getTaskLogMock(true);
         $this->assertTrue($model->archive($model->getByIdAndUser('taskId', 'userId')));
     }
 
-    /**
-     * @expectedException  \Exception
-     */
     public function testArchiveNotPossibleIfTaskIsRunning()
     {
+        $this->expectException(Exception::class);
         $model = $this->getTaskLogMock(false, false, true);
 
         $this->assertTrue($model->archive($model->getByIdAndUser('taskId', 'userId')));
@@ -213,20 +211,16 @@ class TaskLogTest extends TestCase
         $this->assertTrue($model->cancel($model->getByIdAndUser('taskId', 'userId')));
     }
 
-    /**
-     * @expectedException  \common_exception_NotFound
-     */
     public function testCancelTaskNotFound()
     {
+        $this->expectException(common_exception_NotFound::class);
         $model = $this->getTaskLogMock(true);
         $this->assertTrue($model->cancel($model->getByIdAndUser('taskId', 'userId')));
     }
 
-    /**
-     * @expectedException  \Exception
-     */
     public function testCancelNotPossibleIfTaskIsRunning()
     {
+        $this->expectException(Exception::class);
         $model = $this->getTaskLogMock(false, false, true, false);
 
         $this->assertTrue($model->cancel($model->getByIdAndUser('taskId', 'userId')));
@@ -236,7 +230,7 @@ class TaskLogTest extends TestCase
      * @param bool $notFound
      * @param bool $shouldArchive
      * @param bool $taskRunning
-     * @return \PHPUnit_Framework_MockObject_MockObject|TaskLogInterface
+     * @return MockObject|TaskLogInterface
      */
     protected function getTaskLogMock($notFound = false, $shouldArchive = true, $taskRunning = false, $shouldCancel = true)
     {
@@ -254,7 +248,7 @@ class TaskLogTest extends TestCase
         if ($taskRunning) {
             $taskLogMock
                 ->method('getByIdAndUser')
-                ->willThrowException(new \Exception());
+                ->willThrowException(new Exception());
         } else {
             $taskLogMock
                 ->method('archive')
@@ -267,7 +261,7 @@ class TaskLogTest extends TestCase
         if ($notFound) {
             $taskLogMock
                 ->method('getByIdAndUser')
-                ->willThrowException(new \common_exception_NotFound());
+                ->willThrowException(new common_exception_NotFound());
         } else {
             $taskLogMock
                 ->method('getByIdAndUser')
@@ -308,5 +302,9 @@ class TaskLogTest extends TestCase
     }
 }
 
-class StubTaskChild extends StubTaskParent {}
-abstract class StubTaskParent {}
+class StubTaskChild extends StubTaskParent
+{
+}
+abstract class StubTaskParent
+{
+}

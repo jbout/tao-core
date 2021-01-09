@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,17 +21,46 @@
 
 namespace oat\tao\test\unit\model\taskQueue\TaskLog\Broker;
 
+use InvalidArgumentException;
+use oat\generis\test\TestCase;
 use oat\oatbox\service\ServiceManager;
+use oat\tao\model\taskQueue\Task\CallbackTask;
 use oat\tao\model\taskQueue\TaskLog\Broker\RdsTaskLogBroker;
+use common_persistence_Manager as PersistenceManager;
+use oat\tao\model\taskQueue\TaskLog\Entity\TaskLogEntity;
+use oat\tao\model\taskQueue\TaskLog\TaskLogFilter;
+use oat\tao\model\taskQueue\TaskLogInterface;
 
-class RdsTaskLogBrokerTest extends \PHPUnit_Framework_TestCase
+class RdsTaskLogBrokerTest extends TestCase
 {
     /**
-     * @expectedException \InvalidArgumentException
+     * @var RdsTaskLogBroker
      */
-    public function testTaskLogBrokerServiceShouldThrowExceptionWhenPersistenceOptionIsEmpty()
+    protected $subject;
+
+    public function setUp(): void
     {
-        new RdsTaskLogBroker('');
+        $persistenceId = 'rds_task_log_test';
+        $databaseMock = $this->getSqlMock($persistenceId);
+        $persistence = $databaseMock->getPersistenceById($persistenceId);
+
+        $persistenceManager = $this->getMockBuilder(PersistenceManager::class)
+        ->disableOriginalConstructor()
+        ->setMethods(['getPersistenceById'])
+        ->getMock();
+        $persistenceManager
+            ->method('getPersistenceById')
+            ->with($persistenceId)
+            ->willReturn($persistence);
+
+        $serviceManagerMock = $this->getServiceLocatorMock([
+            PersistenceManager::SERVICE_ID => $persistenceManager,
+        ]);
+
+        $this->subject = new RdsTaskLogBroker($persistenceId);
+        $this->subject->setServiceLocator($serviceManagerMock);
+
+        $this->subject->createContainer();
     }
 
     public function testGetPersistenceWhenInstantiatingANewOneThenItReturnsOneWithTheRequiredInterface()
@@ -84,7 +114,7 @@ class RdsTaskLogBrokerTest extends \PHPUnit_Framework_TestCase
 
         $bound = $tableNameCaller->bindTo($broker, $broker);
 
-        $this->assertEquals($prefix .'_'. $containerName, $bound());
+        $this->assertEquals($prefix . '_' . $containerName, $bound());
     }
 
     public function testGetTableNameWhenContainerNameIsNotSuppliedByOptionThenTableNameShouldHaveADefaultValue()
@@ -100,6 +130,45 @@ class RdsTaskLogBrokerTest extends \PHPUnit_Framework_TestCase
 
         $bound = $tableNameCaller->bindTo($broker, $broker);
 
-        $this->assertEquals($prefix .'_'. $defaultName, $bound());
+        $this->assertEquals($prefix . '_' . $defaultName, $bound());
+    }
+
+    public function testCountAndDelete()
+    {
+        $id = 'a random id';
+        $owner = 'Owner name';
+        $status = TaskLogInterface::STATUS_ENQUEUED;
+        $label = 'this is a label';
+        $createdAt = (new \DateTime('2019-06-22 10:11:12'))->setTimezone(new \DateTimeZone('UTC'));
+
+        $task = new CallbackTask($id, $owner);
+        $task->setCreatedAt($createdAt);
+
+        $this->assertEquals(0, $this->subject->count(new TaskLogFilter()));
+        $this->subject->add($task, $status, $label);
+        $this->assertEquals(1, $this->subject->count(new TaskLogFilter()));
+        $this->subject->deleteById($id);
+        $this->assertEquals(0, $this->subject->count(new TaskLogFilter()));
+    }
+
+    public function testAdd()
+    {
+        $id = 'a random id';
+        $owner = 'Owner name';
+        $status = TaskLogInterface::STATUS_ENQUEUED;
+        $label = 'this is a label';
+        $createdAt = (new \DateTime('2019-06-22 10:11:12'))->setTimezone(new \DateTimeZone('UTC'));
+
+        $task = new CallbackTask($id, $owner);
+        $task->setCreatedAt($createdAt);
+
+        $this->assertEquals(0, $this->subject->count(new TaskLogFilter()));
+        $this->subject->add($task, $status, $label);
+        $this->assertEquals(1, $this->subject->count(new TaskLogFilter()));
+        foreach ($this->subject->search(new TaskLogFilter()) as $taskLogEntity) {
+            if ($taskLogEntity instanceof TaskLogEntity) {
+                $this->assertEquals($createdAt, $taskLogEntity->getCreatedAt());
+            }
+        }
     }
 }

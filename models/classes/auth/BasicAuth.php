@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,7 +22,11 @@
 
 namespace oat\tao\model\auth;
 
-
+/**
+ * @deprecated
+ * Interface BasicAuth
+ * @package oat\tao\model\auth
+ */
 interface BasicAuth
 {
     const CLASS_BASIC_AUTH = 'http://www.tao.lu/Ontologies/TAO.rdf#BasicAuthConsumer';

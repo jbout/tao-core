@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,10 +21,10 @@
 namespace oat\tao\test\unit\model\security\xsrf;
 
 use oat\generis\test\TestCase;
+use oat\oatbox\service\exception\InvalidService;
 use oat\tao\model\security\xsrf\Token;
 use oat\tao\model\security\xsrf\TokenService;
 use oat\tao\model\security\xsrf\TokenStore;
-use oat\oatbox\service\exception\InvalidService;
 use Prophecy\Argument;
 
 /**
@@ -44,7 +45,7 @@ class TokenServiceTest extends TestCase
     {
         $this->expectException(InvalidService::class);
         $service = new TokenService([
-            'store' =>  []
+            TokenService::OPTION_STORE => []
         ]);
         $service->checkToken('unusedString');
     }
@@ -53,7 +54,7 @@ class TokenServiceTest extends TestCase
     {
         $store = $this->getStoreMock();
         $service = new TokenService([
-            'store' =>  $store
+            TokenService::OPTION_STORE => $store
         ]);
 
         $this->assertEquals(0, count($store->getTokens()), 'The store is empty');
@@ -84,7 +85,7 @@ class TokenServiceTest extends TestCase
     {
         $store = $this->getStoreMock();
         $service = new TokenService([
-            'store' =>  $store,
+            TokenService::OPTION_STORE => $store,
             TokenService::POOL_SIZE_OPT => 15
         ]);
 
@@ -97,7 +98,7 @@ class TokenServiceTest extends TestCase
         $this->assertCount(15, $tokens, 'The token pool contains the expected amount of tokens');
 
         /** @var Token $firstToken */
-        $firstToken  = $tokens[0];
+        $firstToken = $tokens[0];
 
         /** @var Token $secondToken */
         $secondToken = $tokens[1];
@@ -124,13 +125,116 @@ class TokenServiceTest extends TestCase
         $this->assertCount(13, $store->getTokens(), '2 tokens were validated, and revoked. The store contains 13 tokens');
     }
 
+    public function testGetClientConfig()
+    {
+        $store   = $this->getStoreMock();
+        $service = new TokenService(
+            [
+                TokenService::OPTION_STORE => $store,
+            ]
+        );
+
+        $this->assertCount(0, $store->getTokens(), 'The store is empty');
+
+        $clientConfig = $service->getClientConfig();
+
+        $tokens = $store->getTokens();
+        $this->assertCount(6, $tokens, 'The token pool contains unexpected amount of tokens');
+
+        $this->assertArrayHasKey(TokenService::JS_TOKEN_KEY, $clientConfig);
+        $this->assertArrayHasKey(TokenService::JS_TOKEN_POOL_SIZE_KEY, $clientConfig);
+        $this->assertArrayHasKey(TokenService::JS_TOKEN_TIME_LIMIT_KEY, $clientConfig);
+        $this->assertArrayHasKey(TokenService::JS_TOKEN_STORE, $clientConfig);
+
+        $this->assertCount(
+            6,
+            $clientConfig[TokenService::JS_TOKEN_KEY],
+            'The token pool doesn\'t have the expected size'
+        );
+        $this->assertSame(6, $clientConfig[TokenService::JS_TOKEN_POOL_SIZE_KEY], 'The default pool size is not set');
+        $this->assertSame(0, $clientConfig[TokenService::JS_TOKEN_TIME_LIMIT_KEY], 'The default time limit is not set');
+        $this->assertSame(
+            TokenService::OPTION_CLIENT_STORE_MEMORY,
+            $clientConfig[TokenService::JS_TOKEN_STORE],
+            'The default store limit is not set'
+        );
+
+        $service->addFormToken();
+        $tokens = $store->getTokens();
+        $this->assertCount(7, $tokens, 'The token pool doesn\'t contain the expected amount of tokens');
+
+        $this->assertSame(7, $service->getPoolSize(), 'The pool size is not set the default value + 1');
+        $this->assertSame(6, $clientConfig[TokenService::JS_TOKEN_POOL_SIZE_KEY], 'The default pool size not is set');
+
+        $store   = $this->getStoreMock();
+        $service = new TokenService(
+            [
+                TokenService::OPTION_STORE        => $store,
+                TokenService::POOL_SIZE_OPT       => 4,
+                TokenService::TIME_LIMIT_OPT      => 3,
+                TokenService::OPTION_CLIENT_STORE => TokenService::OPTION_CLIENT_STORE_LOCAL_STORAGE,
+            ]
+        );
+
+        $this->assertCount(0, $store->getTokens(), 'The store is not empty');
+
+        $clientConfig = $service->getClientConfig();
+
+        $tokens = $store->getTokens();
+        $this->assertCount(4, $tokens, 'The token pool doesn\'t contain the expected amount of tokens');
+
+        $this->assertArrayHasKey(TokenService::JS_TOKEN_KEY, $clientConfig);
+        $this->assertArrayHasKey(TokenService::JS_TOKEN_POOL_SIZE_KEY, $clientConfig);
+        $this->assertArrayHasKey(TokenService::JS_TOKEN_TIME_LIMIT_KEY, $clientConfig);
+        $this->assertArrayHasKey(TokenService::JS_TOKEN_STORE, $clientConfig);
+
+        $this->assertCount(
+            4,
+            $clientConfig[TokenService::JS_TOKEN_KEY],
+            'The token pool doesn\'t have the expected size'
+        );
+        $this->assertSame(
+            4,
+            $clientConfig[TokenService::JS_TOKEN_POOL_SIZE_KEY],
+            'The configured pool size is not set'
+        );
+        $this->assertSame(
+            3000,
+            $clientConfig[TokenService::JS_TOKEN_TIME_LIMIT_KEY],
+            'The configured time limit is not set'
+        );
+        $this->assertSame(
+            TokenService::OPTION_CLIENT_STORE_LOCAL_STORAGE,
+            $clientConfig[TokenService::JS_TOKEN_STORE],
+            'The configured client store is not set'
+        );
+
+        $service->addFormToken();
+        $tokens = $store->getTokens();
+        $this->assertCount(5, $tokens, 'The token pool doesn\'t contain the expected amount of tokens');
+
+        $this->assertSame(5, $service->getPoolSize(), 'The pool size is not set the configured value + 1');
+        $this->assertSame(
+            4,
+            $clientConfig[TokenService::JS_TOKEN_POOL_SIZE_KEY],
+            'The configured pool size is not set'
+        );
+    }
+
     public function testPoolSize()
     {
         $store = $this->getStoreMock();
+
         $service = new TokenService([
-            'store' =>  $store,
-            'poolSize' => 4
+            TokenService::OPTION_STORE => $store
         ]);
+        $this->assertEquals(6, $service->getPoolSize(), 'The pool size is set to default');
+
+        $service = new TokenService([
+            'store' => $store,
+            TokenService::POOL_SIZE_OPT => 4
+        ]);
+        $this->assertEquals(4, $service->getPoolSize(), 'The pool size is set the configured value');
 
         $this->assertCount(0, $store->getTokens(), 'The store is empty');
 
@@ -151,13 +255,18 @@ class TokenServiceTest extends TestCase
 
         $service->createToken();
         $this->assertCount(4, $store->getTokens(), 'The store remains at four tokens, the max pool size');
+
+        $service->addFormToken();
+        $this->assertCount(5, $store->getTokens(), 'The store remains at five tokens, the max pool size + the form pool');
+        $this->assertEquals(5, $service->getPoolSize(), 'The pool size is set the configured value + 1');
+        $this->assertEquals(4, $service->getPoolSize(false), 'The pool size is set the configured value, without the form pool');
     }
 
     public function testRevokeToken()
     {
         $store = $this->getStoreMock();
         $service = new TokenService([
-            'store' =>  $store
+            TokenService::OPTION_STORE => $store
         ]);
 
         $this->assertCount(0, $store->getTokens(), 'The store is empty');
@@ -185,7 +294,7 @@ class TokenServiceTest extends TestCase
     {
         $store = $this->getStoreMock();
         $service = new TokenService([
-            'store' =>  $store
+            TokenService::OPTION_STORE => $store
         ]);
 
         $this->assertCount(0, $store->getTokens(), 'The store is empty');
@@ -209,8 +318,8 @@ class TokenServiceTest extends TestCase
     {
         $store = $this->getStoreMock();
         $service = new TokenService([
-            'store' =>  $store,
-            'timeLimit' => 1
+            TokenService::OPTION_STORE => $store,
+            TokenService::TIME_LIMIT_OPT => 1
         ]);
 
         $this->assertCount(0, $store->getTokens(), 'The store is empty');
@@ -240,8 +349,8 @@ class TokenServiceTest extends TestCase
     {
         $store = $this->getStoreMock();
         $service = new TokenService([
-            'store' =>  $store,
-            'timeLimit' => 2
+            TokenService::OPTION_STORE => $store,
+            TokenService::TIME_LIMIT_OPT => 2
         ]);
 
         $this->assertCount(0, $store->getTokens(), 'The store is empty');
@@ -271,14 +380,16 @@ class TokenServiceTest extends TestCase
         $this->assertFalse($service->checkToken($token2->getValue()), 'This second token is not valid');
     }
 
-    protected function getStoreMock()
+    protected function getStoreMock(): TokenStore
     {
-        /** @var TokenStore $storeMock */
         $storeMock = $this->prophesize(TokenStore::class);
         $storeMock->getTokens()->willReturn([]);
-        $storeMock->setTokens(Argument::any())->will(function ($args) use ($storeMock){
-            $storeMock->getTokens()->willReturn($args[0]);
-        });
+        $storeMock->setTokens(Argument::any())->will(
+            function ($args) use ($storeMock) {
+                $storeMock->getTokens()->willReturn($args[0]);
+            }
+        );
+
         return $storeMock->reveal();
     }
 }

@@ -1,19 +1,20 @@
 <?php
+
 /*
  * This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
  *  as published by the Free Software Foundation; under version 2
  *  of the License (non-upgradable).
- *  
+ *
  * This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
- * 
+ *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- * 
+ *
  *  Copyright (c) 2016 (original work) Open Assessment Technologies SA (under the project TAO-PRODUCT);
  */
 
@@ -32,21 +33,27 @@ use Zend\ServiceManager\ServiceLocatorAwareTrait;
  *
  * @author Christophe GARCIA <christopheg@taotesting.com>
  */
-abstract class ResponseAbstract implements ResponseInterface, ServiceLocatorAwareInterface {
-    
+abstract class ResponseAbstract implements ResponseInterface, ServiceLocatorAwareInterface
+{
     use ServiceLocatorAwareTrait;
-    
+
     /**
      * http response code
-     * @var integer 
+     * @var integer
      */
     protected $httpCode;
     /**
      * content type to use into response header
-     * @var string 
+     * @var string
      */
     protected $contentType = '';
-    
+
+    /**
+     * Allowed methods for 405 response
+     * @var string[]
+     */
+    protected $allowMethodsHeader;
+
     /**
      * @var Exception
      */
@@ -54,12 +61,12 @@ abstract class ResponseAbstract implements ResponseInterface, ServiceLocatorAwar
 
 
     protected $rendererClassList =
-            [
-                'html' => 'HtmlResponse',
-                'json' => 'JsonResponse',
-                'none' => 'NonAcceptable',
-                'ajax' => 'AjaxResponse',
-            ];
+        [
+            'html' => 'HtmlResponse',
+            'json' => 'JsonResponse',
+            'none' => 'NonAcceptable',
+            'ajax' => 'AjaxResponse',
+        ];
 
 
     /**
@@ -67,42 +74,45 @@ abstract class ResponseAbstract implements ResponseInterface, ServiceLocatorAwar
      * @param array $accept
      * @return ResponseAbstract
      */
-    protected function chooseRenderer(array $accept) {
+    protected function chooseRenderer(array $accept)
+    {
         $renderClass = 'none';
         foreach ($accept as $mimeType) {
-
             switch (trim(strtolower($mimeType))) {
-                case 'text/html' : 
+                case 'text/html':
                 case 'application/xhtml+xml':
                 case '*/*':
                     $renderClass = 'html';
                     break 2;
-                case 'application/json' :
-                case 'text/json' : 
+                case 'application/json':
+                case 'text/json':
                     $renderClass = 'json';
                     break 2;
             }
-            
         }
 
-        if(tao_helpers_Request::isAjax()) {
+        if (tao_helpers_Request::isAjax()) {
             $renderClass = 'ajax';
         }
 
         $className = __NAMESPACE__ . '\\' . $this->rendererClassList[$renderClass];
-        
+
         $renderer = new $className();
-        
+
         return $renderer->setServiceLocator($this->getServiceLocator());
     }
     /**
      * send headers
      * @return $this
      */
-    protected function sendHeaders() {
+    protected function sendHeaders()
+    {
         $context = Context::getInstance();
         $context->getResponse()->setContentHeader($this->contentType);
         header(HTTPToolkit::statusCodeHeader($this->httpCode));
+        if (!empty($this->allowMethodsHeader)) {
+            header('Allow: ' . implode(', ', $this->allowMethodsHeader));
+        }
         return $this;
     }
     /**
@@ -110,22 +120,38 @@ abstract class ResponseAbstract implements ResponseInterface, ServiceLocatorAwar
      * @param int $code
      * @return $this
      */
-    public function setHttpCode($code) {
+    public function setHttpCode($code)
+    {
         $this->httpCode = $code;
         return $this;
     }
-    
+
+    /**
+     * @param string[]|null $allowedMethods
+     * @return $this
+     */
+    public function setAllowedMethods($allowedMethods)
+    {
+        $this->allowMethodsHeader = $allowedMethods;
+        return $this;
+    }
+
     /**
      * @inherit
      */
     public function send()
     {
-        $accept = array_key_exists('HTTP_ACCEPT', $_SERVER) ? explode(',' , $_SERVER['HTTP_ACCEPT']) : [];
+        $accept = array_key_exists('HTTP_ACCEPT', $_SERVER) ? explode(',', $_SERVER['HTTP_ACCEPT']) : [];
         $renderer = $this->chooseRenderer($accept);
 
-        return $renderer->setException($this->exception)->setHttpCode($this->httpCode)->sendHeaders()->send();
+        return $renderer
+            ->setException($this->exception)
+            ->setHttpCode($this->httpCode)
+            ->setAllowedMethods($this->allowMethodsHeader)
+            ->sendHeaders()
+            ->send();
     }
-    
+
     /**
      * @inherit
      */
@@ -134,7 +160,7 @@ abstract class ResponseAbstract implements ResponseInterface, ServiceLocatorAwar
         if ($this->exception) {
             common_Logger::singleton()->handleException($this->exception);
         }
-        
+
         return $this;
     }
 
@@ -143,9 +169,9 @@ abstract class ResponseAbstract implements ResponseInterface, ServiceLocatorAwar
      * @param Exception $exception
      * @return $this
      */
-    public function setException(Exception $exception) {
+    public function setException(Exception $exception)
+    {
         $this->exception = $exception;
         return $this;
     }
-    
 }

@@ -1,3 +1,6 @@
+<?php
+use oat\tao\model\security\xsrf\TokenService;
+?>
 require.config({
 
     baseUrl : '<?=get_data('tao_base_www')?>js',
@@ -13,7 +16,7 @@ require.config({
             useXhr: function(){ return true; },
         },
         'ui/themes' : <?= get_data('themesAvailable') ?>,
-        'core/tokenHandler' : <?=get_data('tokens')?>,
+        'core/tokenHandler' : <?=get_data(TokenService::JS_DATA_KEY)?>,
 
 //dynamic lib config
     <?php foreach (get_data('libConfigs') as $name => $config) :?>
@@ -33,15 +36,18 @@ require.config({
         'tpl'               : 'tpl',
 //jquery and plugins
         'jquery'            : '../node_modules/jquery/jquery',
-        'select2'           : 'lib/select2/select2.min',
         'jquery.autocomplete'  : 'lib/jquery.autocomplete/jquery.autocomplete',
         'jquery.tree'       : 'lib/jsTree/jquery.tree',
         'jquery.timePicker' : 'lib/jquery.timePicker',
         'jquery.cookie'     : 'lib/jquery.cookie',
         'nouislider'        : 'lib/sliders/jquery.nouislider',
         'jquery.fileDownload'  : 'lib/jquery.fileDownload',
+// select2
+        'select2'           : '../node_modules/@oat-sa/tao-core-libs/dist/select2',
+        'select2-origin'    : '../node_modules/select2',
 //polyfills
         'polyfill'          : 'lib/polyfill',
+        'url-polyfill'      : '../node_modules/url-polyfill/url-polyfill',
 //libs
         'lodash'            : '../node_modules/lodash/lodash',
         'async'             : 'lib/async',
@@ -57,8 +63,8 @@ require.config({
             '../../../taoQtiItem/views/js/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML-full',
             '../../../taoQtiItem/views/js/MathJaxFallback'
         ],
-        'ckeditor'          : 'lib/ckeditor/ckeditor',
-        'interact'          : 'lib/interact',
+        'ckeditor'          : '../node_modules/@oat-sa/tao-core-shared-libs/lib/ckeditor/ckeditor',
+        'interact'          : '../node_modules/interactjs/dist/interact',
         'd3'                : 'lib/d3js/d3',
         'c3'                : 'lib/c3js/c3',
 //locale loader
@@ -71,8 +77,14 @@ require.config({
     <?php endforeach?>
         'lib/uuid'          : '../node_modules/@oat-sa/tao-core-libs/dist/uuid',
         'core'              : '../node_modules/@oat-sa/tao-core-sdk/dist/core',
-        'util'              : '../node_modules/@oat-sa/tao-core-sdk/dist/util'
-   },
+        'util'              : '../node_modules/@oat-sa/tao-core-sdk/dist/util',
+        'ui'                : '../node_modules/@oat-sa/tao-core-ui/dist'
+    },
+     "packages": [{
+        "name": "codemirror",
+        "location": "../../../tao/views/node_modules/codemirror",
+        "main": "lib/codemirror"
+    }],
    shim : {
         'jqueryui'              : { deps : ['jquery'] },
         'moment'                : { exports : 'moment' },

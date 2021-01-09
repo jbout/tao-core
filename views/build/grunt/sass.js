@@ -9,7 +9,7 @@ module.exports = function(grunt) {
     grunt.config.merge({
         sass : {
             options: {
-                includePaths : [ '../scss/', '../js/lib/' ],
+                includePaths : [ '../scss/', '../js/lib/', '../node_modules/@oat-sa/tao-core-ui/scss' ],
                 outputStyle : 'compressed',
                 sourceMap : true,
                 //set implementation for sass to make 3.x.x branches of grunt-sass work, see https://github.com/nodejs/nan/issues/504#issuecomment-385296082, https://github.com/sourcey/spectacle/issues/156#issuecomment-401731543
@@ -20,13 +20,8 @@ module.exports = function(grunt) {
                     '../css/tao-main-style.css' : '../scss/tao-main-style.scss',
                     '../css/tao-3.css' : '../scss/tao-3.scss',
                     '../css/layout.css' : '../scss/layout.scss',
+                    '../css/error-page.css': '../scss/error-page.scss',
                     '../js/lib/jsTree/themes/css/style.css' : '../js/lib/jsTree/themes/scss/style.scss'
-                }
-            },
-            ckeditor : {
-                files : {
-                    '../js/lib/ckeditor/skins/tao/editor.css' : '../js/lib/ckeditor/skins/tao/scss/editor.scss',
-                    '../js/lib/ckeditor/skins/tao/dialog.css' : '../js/lib/ckeditor/skins/tao/scss/dialog.scss'
                 }
             },
             component : {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,7 +30,6 @@ use oat\oatbox\task\implementation\SyncQueue;
  */
 class tao_actions_QueueAction extends \tao_actions_CommonModule
 {
-
     use TaskQueueActionTrait;
 
     /**
@@ -122,5 +122,4 @@ class tao_actions_QueueAction extends \tao_actions_CommonModule
 
         return $storageService->readStream($fileUri);
     }
-
 }

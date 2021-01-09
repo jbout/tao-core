@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,17 +25,17 @@ use oat\generis\test\TestCase;
 use oat\tao\helpers\form\validators\ResourceSignatureValidator;
 use oat\tao\model\security\SecurityException;
 use oat\tao\model\security\SignatureValidator;
-use PHPUnit_Framework_MockObject_MockObject;
+use oat\generis\test\MockObject;
 
 class ResourceSignatureValidatorTest extends TestCase
 {
-    /** @var SignatureValidator|PHPUnit_Framework_MockObject_MockObject */
+    /** @var SignatureValidator|MockObject */
     private $signatureValidator;
 
     /** @var ResourceSignatureValidator */
     private $subject;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
