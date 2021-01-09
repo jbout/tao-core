@@ -142,6 +142,9 @@ class ConfigurableTheme extends Configurable implements Theme
     public function getTemplate($id, $context = Theme::CONTEXT_BACKOFFICE)
     {
         switch ($id) {
+            case 'head':
+                $template = Template::getTemplate('blocks/head.tpl', 'tao');
+                break;
             case 'header-logo':
                 $template = Template::getTemplate('blocks/header-logo.tpl', 'tao');
                 break;
@@ -150,6 +153,9 @@ class ConfigurableTheme extends Configurable implements Theme
                 break;
             case 'login-message':
                 $template = Template::getTemplate('blocks/login-message.tpl', 'tao');
+                break;
+            case 'login':
+                $template = Template::getTemplate('blocks/login.tpl', 'tao');
                 break;
             default:
                 \common_Logger::w('Unknown template ' . $id);

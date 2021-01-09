@@ -40,7 +40,10 @@ abstract class Controller implements ServiceLocatorAwareInterface
     use HttpFlowTrait;
     use ServiceLocatorAwareTrait;
 
+    /** @var ServerRequestInterface */
     protected $request;
+
+    /** @var ResponseInterface */
     protected $response;
 
     /**

@@ -17,33 +17,39 @@
  *
  * Copyright (c) 2002-2008 (original work) Public Research Centre Henri Tudor & University of Luxembourg (under the project TAO & TAO2);
  *               2009-2012 (update and modification) Public Research Centre Henri Tudor (under the project TAO-SUSTAIN & TAO-DEV);
- *               2013- (update and modification) Open Assessment Technologies SA;
+ *               2013-2020 (update and modification) Open Assessment Technologies SA;
  *
  */
 
 namespace oat\tao\model\mvc;
 
-use GuzzleHttp\Psr7\Request;
+use common_exception_PreConditionFailure as PreConditionException;
+use common_exception_SystemUnderMaintenance as MaintenanceException;
+use common_ext_ExtensionsManager;
+use common_Logger;
+use common_report_Report as Report;
+use common_session_SessionManager as SessionManager;
+use Exception;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
+use helpers_Report as ReportHelper;
 use oat\oatbox\service\ServiceConfigDriver;
 use oat\oatbox\service\ServiceManager;
 use oat\oatbox\service\ServiceManagerAwareInterface;
 use oat\oatbox\service\ServiceManagerAwareTrait;
 use oat\tao\helpers\Template;
 use oat\tao\model\asset\AssetService;
+use oat\tao\model\http\RequestRebuilder;
 use oat\tao\model\maintenance\Maintenance;
-use oat\tao\model\routing\TaoFrontController;
+use oat\tao\model\mvc\error\ExceptionInterpreterService;
 use oat\tao\model\routing\CliController;
-use common_Logger;
-use common_ext_ExtensionsManager;
-use common_report_Report as Report;
+use oat\tao\model\routing\TaoFrontController;
+use oat\tao\model\session\Business\Contract\SessionCookieServiceInterface;
+use Psr\Http\Message\RequestInterface;
+use Request;
 use tao_helpers_Context;
 use tao_helpers_Request;
-use tao_helpers_Uri;
-use Exception;
-use oat\tao\model\mvc\error\ExceptionInterpreterService;
-use Symfony\Component\Dotenv\Dotenv;
+use tao_helpers_Scriptloader as ScriptLoader;
 
 /**
  * The Bootstrap Class enables you to drive the application flow for a given extenstion.
@@ -92,15 +98,10 @@ class Bootstrap implements ServiceManagerAwareInterface
      */
     public function __construct($configuration)
     {
-        $envFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR
-            . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '.env';
-        if (file_exists($envFile)) {
-            $dotenv = new Dotenv();
-            $dotenv->loadEnv($envFile);
-        }
+        new DotEnvReader();
 
         if (! is_string($configuration) || ! is_readable($configuration)) {
-            throw new \common_exception_PreConditionFailure('TAO platform seems to be not installed.');
+            throw new PreConditionException('TAO platform seems to be not installed.');
         }
 
         require_once $configuration;
@@ -114,7 +115,7 @@ class Bootstrap implements ServiceManagerAwareInterface
         $this->setServiceLocator($serviceManager);
         // To be removed when getServiceManager will disappear
         ServiceManager::setServiceManager($serviceManager);
-        if (PHP_SAPI == 'cli') {
+        if (PHP_SAPI === 'cli') {
             tao_helpers_Context::load('SCRIPT_MODE');
         } else {
             tao_helpers_Context::load('APP_MODE');
@@ -201,7 +202,7 @@ class Bootstrap implements ServiceManagerAwareInterface
      * Redirect to maintenance page if http call is not ajax
      * Otherwise throw common_exception_SystemUnderMaintenance
      *
-     * @throws \common_exception_SystemUnderMaintenance
+     * @throws MaintenanceException
      */
     protected function displayMaintenancePage()
     {
@@ -210,7 +211,7 @@ class Bootstrap implements ServiceManagerAwareInterface
             require_once Template::getTemplate('error/maintenance.tpl', 'tao');
             //else throw an exception, this exception will be send to the client properly
         } else {
-            throw new \common_exception_SystemUnderMaintenance();
+            throw new MaintenanceException();
         }
     }
 
@@ -218,7 +219,7 @@ class Bootstrap implements ServiceManagerAwareInterface
     protected function dispatchCli()
     {
         $params = $_SERVER['argv'];
-        $file = array_shift($params);
+        array_shift($params);
 
         if (count($params) < 1) {
             $report = new Report(Report::TYPE_ERROR, __('No action specified'));
@@ -229,7 +230,7 @@ class Bootstrap implements ServiceManagerAwareInterface
             $report = $cliController->runAction($actionIdentifier, $params);
         }
 
-        echo \helpers_Report::renderToCommandline($report);
+        echo ReportHelper::renderToCommandline($report);
     }
 
     /**
@@ -241,7 +242,7 @@ class Bootstrap implements ServiceManagerAwareInterface
     public function dispatch()
     {
         if (!self::$isDispatched) {
-            if (PHP_SAPI == 'cli') {
+            if (PHP_SAPI === 'cli') {
                 $this->dispatchCli();
             } else {
                 $this->dispatchHttp();
@@ -268,9 +269,13 @@ class Bootstrap implements ServiceManagerAwareInterface
      */
     protected function session()
     {
+        if (PHP_SAPI === 'cli') {
+            return;
+        }
+
         if (tao_helpers_Context::check('APP_MODE')) {
             // Set a specific ID to the session.
-            $request = new \Request();
+            $request = new Request();
             if ($request->hasParameter('session_id')) {
                 session_id($request->getParameter('session_id'));
             }
@@ -280,22 +285,7 @@ class Bootstrap implements ServiceManagerAwareInterface
 
         $this->configureSessionHandler();
 
-        $sessionParams = session_get_cookie_params();
-        $cookieDomain = ((true == tao_helpers_Uri::isValidAsCookieDomain(ROOT_URL)) ? tao_helpers_Uri::getDomain(ROOT_URL) : $sessionParams['domain']);
-        $isSecureFlag = \common_http_Request::isHttps();
-        session_set_cookie_params($sessionParams['lifetime'], tao_helpers_Uri::getPath(ROOT_URL), $cookieDomain, $isSecureFlag, true);
-        session_name(GENERIS_SESSION_NAME);
-
-        if (isset($_COOKIE[GENERIS_SESSION_NAME])) {
-            // Resume the session
-            session_start();
-
-            //cookie keep alive, if lifetime is not 0
-            if ($sessionParams['lifetime'] !== 0) {
-                $expiryTime = $sessionParams['lifetime'] + time();
-                setcookie(session_name(), session_id(), $expiryTime, tao_helpers_Uri::getPath(ROOT_URL), $cookieDomain, $isSecureFlag, true);
-            }
-        }
+        $this->getSessionCookieService()->initializeSessionCookie();
     }
 
     private function configureSessionHandler()
@@ -339,7 +329,7 @@ class Bootstrap implements ServiceManagerAwareInterface
      */
     protected function mvc()
     {
-        $request = ServerRequest::fromGlobals();
+        $request = $this->buildRequest();
         $response = new Response();
         $frontController = $this->propagate(new TaoFrontController());
         $frontController($request, $response);
@@ -359,22 +349,30 @@ class Bootstrap implements ServiceManagerAwareInterface
         ];
 
         //stylesheets to load
-        \tao_helpers_Scriptloader::addCssFiles($cssFiles);
+        ScriptLoader::addCssFiles($cssFiles);
 
-        if (\common_session_SessionManager::isAnonymous()) {
-            \tao_helpers_Scriptloader::addCssFile(
+        if (SessionManager::isAnonymous()) {
+            ScriptLoader::addCssFile(
                 $assetService->getAsset('css/portal.css', 'tao')
             );
         }
     }
 
-    /**
-     * Get the maintenance service to handle maintenance status
-     *
-     * @return Maintenance
-     */
-    protected function getMaintenanceService()
+    protected function getMaintenanceService(): Maintenance
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->getServiceLocator()->get(Maintenance::SERVICE_ID);
+    }
+
+    private function getSessionCookieService(): SessionCookieServiceInterface
+    {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $this->getServiceLocator()->get(SessionCookieServiceInterface::class);
+    }
+
+    private function buildRequest(): RequestInterface
+    {
+        $request = ServerRequest::fromGlobals();
+        return (new RequestRebuilder())->rebuild($request);
     }
 }

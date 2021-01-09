@@ -22,11 +22,9 @@
 
 namespace oat\tao\scripts\update;
 
-use common_cache_Cache;
 use common_Exception;
 use common_report_Report as Report;
 use core_kernel_persistence_smoothsql_SmoothModel;
-use oat\funcAcl\models\ModuleAccessService;
 use oat\generis\model\data\event\ResourceCreated;
 use oat\generis\model\data\event\ResourceDeleted;
 use oat\generis\model\data\event\ResourceUpdated;
@@ -79,22 +77,19 @@ use oat\tao\model\notification\implementation\NotificationServiceAggregator;
 use oat\tao\model\notification\implementation\RdsNotification;
 use oat\tao\model\notification\NotificationServiceInterface;
 use oat\tao\model\oauth\DataStore;
+use oat\tao\model\oauth\lockout\NoLockout;
 use oat\tao\model\oauth\nonce\NoNonce;
 use oat\tao\model\oauth\OauthService;
 use oat\tao\model\OperatedByService;
-use oat\tao\model\resources\GetAllChildrenCacheKeyFactory;
 use oat\tao\model\resources\ListResourceLookup;
 use oat\tao\model\resources\ResourceService;
 use oat\tao\model\resources\ResourceWatcher;
-use oat\tao\model\resources\SecureResourceCachedService;
 use oat\tao\model\resources\SecureResourceService;
 use oat\tao\model\resources\SecureResourceServiceInterface;
 use oat\tao\model\resources\TreeResourceLookup;
-use oat\tao\model\resources\ValidatePermissionsCacheKeyFactory;
 use oat\tao\model\routing\AnnotationReaderService;
 use oat\tao\model\routing\ControllerService;
 use oat\tao\model\routing\RouteAnnotationService;
-use oat\tao\model\search\aggregator\UnionSearchService;
 use oat\tao\model\search\index\IndexService;
 use oat\tao\model\security\ActionProtector;
 use oat\tao\model\security\Business\Contract\SecuritySettingsRepositoryInterface;
@@ -148,15 +143,16 @@ use oat\tao\scripts\install\CreateWebhookEventLogTable;
 use oat\tao\scripts\install\InstallNotificationTable;
 use oat\tao\scripts\install\RegisterActionService;
 use oat\tao\scripts\install\RegisterSignatureGenerator;
+use oat\tao\scripts\install\RegisterValueCollectionServices;
 use oat\tao\scripts\install\SetClientLoggerConfig;
 use oat\tao\scripts\install\UpdateRequiredActionUrl;
 use oat\tao\scripts\tools\MigrateSecuritySettings;
-use tao_install_utils_ModelCreator;
 use tao_models_classes_UserService;
 
 /**
  *
  * @author Joel Bout <joel@taotesting.com>
+ * @deprecated use migrations instead. See https://github.com/oat-sa/generis/wiki/Tao-Update-Process
  */
 class Updater extends \common_ext_ExtensionUpdater
 {
@@ -173,387 +169,8 @@ class Updater extends \common_ext_ExtensionUpdater
     public function update($initialVersion)
     {
 
-        if ($this->isBetween('0.0.0', '2.21.0')) {
-            throw new \common_exception_NotImplemented('Updates from versions prior to Tao 3.1 are not longer supported, please update to Tao 3.1 first');
-        }
-        $this->skip('2.22.0', '5.5.0');
-
-        if ($this->isVersion('5.5.0')) {
-            $clientConfig = new ClientConfigService();
-            $clientConfig->setClientConfig('themesAvailable', new ThemeConfig());
-            $this->getServiceManager()->register(ClientConfigService::SERVICE_ID, $clientConfig);
-            $this->setVersion('5.6.0');
-        }
-
-        $this->skip('5.6.0', '5.6.2');
-
-        if ($this->isVersion('5.6.2')) {
-            if (!$this->getServiceManager()->has(UpdateLogger::SERVICE_ID)) {
-                // setup log fs
-                $fsm = $this->getServiceManager()->get(FileSystemService::SERVICE_ID);
-                $fsm->createFileSystem('log', 'tao/log');
-                $this->getServiceManager()->register(FileSystemService::SERVICE_ID, $fsm);
-
-                $this->getServiceManager()->register(UpdateLogger::SERVICE_ID, new UpdateLogger([UpdateLogger::OPTION_FILESYSTEM => 'log']));
-            }
-            $this->setVersion('5.6.3');
-        }
-
-        $this->skip('5.6.3', '5.9.1');
-
-        if ($this->isVersion('5.9.1')) {
-            /** @var EventManager $eventManager */
-            $eventManager = $this->getServiceManager()->get(EventManager::CONFIG_ID);
-
-            $eventManager->detach(RoleRemovedEvent::class, ['oat\\tao\\scripts\\update\\LoggerService', 'logEvent']);
-            $eventManager->detach(RoleCreatedEvent::class, ['oat\\tao\\scripts\\update\\LoggerService', 'logEvent']);
-            $eventManager->detach(RoleChangedEvent::class, ['oat\\tao\\scripts\\update\\LoggerService', 'logEvent']);
-            $eventManager->detach(UserCreatedEvent::class, ['oat\\tao\\scripts\\update\\LoggerService', 'logEvent']);
-            $eventManager->detach(UserUpdatedEvent::class, ['oat\\tao\\scripts\\update\\LoggerService', 'logEvent']);
-            $eventManager->detach(UserRemovedEvent::class, ['oat\\tao\\scripts\\update\\LoggerService', 'logEvent']);
-
-            $this->getServiceManager()->register(EventManager::CONFIG_ID, $eventManager);
-
-            $this->setVersion('5.9.2');
-        }
-
-        // Hotfix to register ApplicationService for instances with old tao-core version
-        // ApplicationService was introduced in tao-core version 20.1.0
-        if ($this->isBetween('6.0.1', '20.0.4')) {
-            $options = [];
-            if (defined('ROOT_PATH') && is_readable(ROOT_PATH . 'build')) {
-                $content = file_get_contents(ROOT_PATH . 'build');
-                $options[ApplicationService::OPTION_BUILD_NUMBER] = $content;
-            }
-
-            $applicationService = new ApplicationService($options);
-            $this->getServiceManager()->register(ApplicationService::SERVICE_ID, $applicationService);
-        }
-
-        $this->skip('5.9.2', '6.0.1');
-
-        if ($this->isVersion('6.0.1')) {
-            OntologyUpdater::syncModels();
-            $this->setVersion('6.1.0');
-        }
-
-        $this->skip('6.1.0', '7.16.2');
-
-        if ($this->isVersion('7.16.2')) {
-            OntologyUpdater::syncModels();
-            ValidationRuleRegistry::getRegistry()->set('notEmpty', new \tao_helpers_form_validators_NotEmpty());
-            $this->setVersion('7.17.0');
-        }
-
-        $this->skip('7.17.0', '7.23.0');
-
-        if ($this->isVersion('7.23.0')) {
-            $service = new \oat\tao\model\mvc\DefaultUrlService();
-            $service->setRoute('default', [
-                'ext'        => 'tao',
-                'controller' => 'Main',
-                'action'     => 'index',
-                ]);
-            $service->setRoute('login', [
-                'ext'        => 'tao',
-                'controller' => 'Main',
-                'action'     => 'login',
-            ]);
-            $this->getServiceManager()->register(\oat\tao\model\mvc\DefaultUrlService::SERVICE_ID, $service);
-            $this->setVersion('7.24.0');
-        }
-
-        $this->skip('7.24.0', '7.27.0');
-
-        if ($this->isVersion('7.27.0')) {
-            OntologyUpdater::syncModels();
-            $this->setVersion('7.28.0');
-        }
-        $this->skip('7.28.0', '7.30.1');
-
-        if ($this->isVersion('7.30.1')) {
-            /*@var $routeService \oat\tao\model\mvc\DefaultUrlService */
-            $routeService = $this->getServiceManager()->get(\oat\tao\model\mvc\DefaultUrlService::SERVICE_ID);
-            $routeService->setRoute(
-                'logout',
-                [
-                            'ext'        => 'tao',
-                            'controller' => 'Main',
-                            'action'     => 'logout',
-                            'redirect'   => _url('entry', 'Main', 'tao'),
-                        ]
-            );
-            $this->getServiceManager()->register(\oat\tao\model\mvc\DefaultUrlService::SERVICE_ID, $routeService);
-
-            $this->setVersion('7.31.0');
-        }
-
-        $this->skip('7.31.0', '7.31.1');
-        // add validation widget
-        if ($this->isVersion('7.31.1')) {
-            OntologyUpdater::syncModels();
-            $this->setVersion('7.32.0');
-        }
-
-        $this->skip('7.32.0', '7.34.0');
-
-        if ($this->isVersion('7.34.0')) {
-            OntologyUpdater::syncModels();
-            AclProxy::applyRule(new AccessRule(
-                AccessRule::GRANT,
-                TaskService::TASK_QUEUE_MANAGER_ROLE,
-                ['ext' => 'tao', 'mod' => 'TaskQueue']
-            ));
-            $this->setVersion('7.35.0');
-        }
-
-        $this->skip('7.35.0', '7.46.0');
-
-        if ($this->isVersion('7.46.0')) {
-            $this->getServiceManager()->register(ExtraPoService::SERVICE_ID, new ExtraPoService());
-
-            $this->setVersion('7.47.0');
-        }
-
-        $this->skip('7.47.0', '7.54.0');
-
-        if ($this->isVersion('7.54.0')) {
-            $persistence = \common_persistence_Manager::getPersistence('default');
-            /** @var \common_persistence_sql_pdo_SchemaManager $schemaManager */
-            $schemaManager = $persistence->getDriver()->getSchemaManager();
-            $schema = $schemaManager->createSchema();
-            $fromSchema = clone $schema;
-            // test if already executed
-            $statementsTableData = $schema->getTable('statements');
-            $statementsTableData->dropIndex('idx_statements_modelid');
-            $modelsTableData = $schema->getTable('models');
-            $modelsTableData->dropIndex('idx_models_modeluri');
-            $queries = $persistence->getPlatform()->getMigrateSchemaSql($fromSchema, $schema);
-            foreach ($queries as $query) {
-                $persistence->exec($query);
-            }
-            $this->setVersion('7.54.1');
-        }
-
-        $this->skip('7.54.1', '7.61.0');
-
-        if ($this->isVersion('7.61.0')) {
-            $setClientLoggerConfig = new SetClientLoggerConfig();
-            $setClientLoggerConfig([]);
-            $this->setVersion('7.62.0');
-        }
-
-        $this->skip('7.62.0', '7.68.0');
-
-        if ($this->isVersion('7.68.0')) {
-            $notifInstaller = new InstallNotificationTable();
-            $notifInstaller->setServiceLocator($this->getServiceManager());
-            $notifInstaller->__invoke([]);
-            AclProxy::applyRule(new AccessRule('grant', 'http://www.tao.lu/Ontologies/TAO.rdf#BaseUserRole', ['ext' => 'tao','mod' => 'Notification']));
-            $this->setVersion('7.69.0');
-        }
-
-        $this->skip('7.69.0', '7.69.6');
-
-        if ($this->isVersion('7.69.6')) {
-            $queue = new NotificationServiceAggregator([
-                'rds' =>
-                    [
-                        'class'   => RdsNotification::class,
-                        'options' => [
-                            RdsNotification::OPTION_PERSISTENCE => RdsNotification::DEFAULT_PERSISTENCE,
-                            'visibility'  => false,
-                        ],
-                    ]
-                ]);
-
-            $this->getServiceManager()->register(NotificationServiceInterface::SERVICE_ID, $queue);
-
-            $this->setVersion('7.70.0');
-        }
-
-        $this->skip('7.70.0', '7.73.0');
-
-        if ($this->isVersion('7.73.0')) {
-            $action = new AddTmpFsHandlers();
-            $action->setServiceLocator($this->getServiceManager());
-            $action->__invoke([]);
-            $this->setVersion('7.74.0');
-        }
-
-        $this->skip('7.74.0', '7.82.1');
-
-        if ($this->isVersion('7.82.1')) {
-            $service = new \oat\tao\model\import\ImportersService([]);
-            $this->getServiceManager()->register(\oat\tao\model\import\ImportersService::SERVICE_ID, $service);
-            $this->setVersion('7.83.0');
-        }
-
-        $this->skip('7.83.0', '7.88.0');
-
-
-        if ($this->isVersion('7.88.0')) {
-            $service = new ExceptionInterpreterService([
-                ExceptionInterpreterService::OPTION_INTERPRETERS => [
-                    \Exception::class => ExceptionInterpretor::class
-                ]
-            ]);
-            $this->getServiceManager()->register(ExceptionInterpreterService::SERVICE_ID, $service);
-            $this->setVersion('7.89.0');
-        }
-
-        $this->skip('7.89.0', '7.91.2');
-
-        if ($this->isVersion('7.91.2')) {
-            OntologyUpdater::syncModels();
-            $this->setVersion('7.91.3');
-        }
-        $this->skip('7.91.3', '8.1.0');
-
-        if ($this->isVersion('8.1.0')) {
-            if (! $this->getServiceManager()->has(Maintenance::SERVICE_ID)) {
-                $maintenancePersistence = 'maintenance';
-
-                try {
-                    \common_persistence_Manager::getPersistence($maintenancePersistence);
-                } catch (\common_Exception $e) {
-                    \common_persistence_Manager::addPersistence($maintenancePersistence, ['driver' => 'phpfile']);
-                }
-
-                $service = new Maintenance();
-                $service->setOption(Maintenance::OPTION_PERSISTENCE, $maintenancePersistence);
-                $this->getServiceManager()->register(Maintenance::SERVICE_ID, $service);
-
-                $this->getServiceManager()->get(Maintenance::SERVICE_ID)->enablePlatform();
-            }
-            $this->setVersion('8.2.0');
-        }
-
-        $this->skip('8.2.0', '9.1.1');
-
-        if ($this->isVersion('9.1.1')) {
-            $this->getServiceManager()->register(TokenService::SERVICE_ID, new TokenService([
-                'store' => new TokenStoreSession(),
-                'poolSize' => 10,
-                'timeLimit' => 0
-            ]));
-            $this->setVersion('9.2.0');
-        }
-
-        $this->skip('9.2.0', '10.10.0');
-
-        if ($this->isVersion('10.10.0')) {
-            $this->getServiceManager()->register(ArgumentService::SERVICE_ID, new ArgumentService([
-                'arguments' => [
-                    new Group([new Debug(), new Info(), new Notice(), new Error(),])
-                ]
-            ]));
-            $this->setVersion('10.11.0');
-        }
-
-        $this->skip('10.11.0', '10.12.0');
-
-        if ($this->isVersion('10.12.0')) {
-            $this->getServiceManager()->register(
-                OperatedByService::SERVICE_ID,
-                new OperatedByService([
-                    'operatedByName' => 'Open Assessment Technologies S.A.',
-                    'operatedByEmail' => 'contact@taotesting.com'
-                ])
-            );
-
-            $this->setVersion('10.13.0');
-        }
-
-        $this->skip('10.13.0', '10.15.0');
-
-        if ($this->isVersion('10.15.0')) {
-            ClientLibConfigRegistry::getRegistry()->register(
-                'util/locale',
-                ['dateTimeFormat' => 'DD/MM/YYYY HH:mm:ss']
-            );
-            $this->setVersion('10.16.0');
-        }
-
-        $this->skip('10.16.0', '10.19.3');
-
-        if ($this->isVersion('10.19.3')) {
-            $operatedByService = $this->getServiceManager()->get(OperatedByService::SERVICE_ID);
-
-            $operatedByService->setName('');
-            $operatedByService->setEmail('');
-
-            $this->getServiceManager()->register(OperatedByService::SERVICE_ID, $operatedByService);
-            $this->setVersion('10.19.4');
-        }
-
-        $this->skip('10.19.4', '10.19.6');
-
-        if ($this->isVersion('10.19.6')) {
-            /**
-             * @var $urlService DefaultUrlService
-             */
-            $urlService = $this->getServiceManager()->get(DefaultUrlService::SERVICE_ID);
-
-            $route = $urlService->getRoute('logout');
-
-            $route['redirect'] =  [
-                'class'   => \oat\tao\model\mvc\DefaultUrlModule\TaoActionResolver::class,
-                'options' => [
-                    'action' => 'entry',
-                    'controller' => 'Main',
-                    'ext' => 'tao'
-                ]
-            ];
-
-            $urlService->setRoute('logout', $route);
-            $this->getServiceManager()->register(DefaultUrlService::SERVICE_ID, $urlService);
-            $this->setVersion('10.20.0');
-        }
-
-        if ($this->isVersion('10.20.0')) {
-            $this->runExtensionScript(UpdateRequiredActionUrl::class);
-            $this->setVersion('10.21.0');
-        }
-
-        $this->skip('10.21.0', '10.24.1');
-
-        if ($this->isVersion('10.24.1')) {
-            $this->runExtensionScript(AddArchiveService::class);
-
-            $this->setVersion('10.25.0');
-        }
-
-        $this->skip('10.25.0', '10.27.0');
-
-        if ($this->isVersion('10.27.0')) {
-            AclProxy::applyRule(new AccessRule('grant', 'http://www.tao.lu/Ontologies/TAO.rdf#BackOfficeRole', ['ext' => 'tao','mod' => 'TaskQueueData']));
-            $this->setVersion('10.28.0');
-        }
-
-        $this->skip('10.28.0', '10.28.1');
-
-        if ($this->isVersion('10.28.1')) {
-            $extension = \common_ext_ExtensionsManager::singleton()->getExtensionById('tao');
-            $config = $extension->getConfig('login');
-
-            if (!array_key_exists('block_iframe_usage', $config)) {
-                $config['block_iframe_usage'] = false;
-            }
-            $extension->setConfig('login', $config);
-
-            $this->setVersion('10.29.0');
-        }
-
-        $this->skip('10.29.0', '12.2.1');
-
-        if ($this->isVersion('12.2.1')) {
-            try {
-                $session = $this->getServiceManager()->get('tao/session');
-            } catch (ServiceNotFoundException $e) {
-                \common_ext_ExtensionsManager::singleton()->getExtensionById('tao')->setConfig('session', false);
-            }
-            $this->setVersion('12.2.2');
+        if ($this->isBetween('0.0.0', '12.2.1')) {
+            throw new \common_exception_NotImplemented('Updates from versions prior to Tao 3.2 are not longer supported, please update to Tao 3.2 first');
         }
 
         $this->skip('12.2.2', '12.21.5');
@@ -589,11 +206,11 @@ class Updater extends \common_ext_ExtensionUpdater
         $this->skip('14.4.1', '14.8.0');
 
         if ($this->isVersion('14.8.0')) {
-            $moduleService = ModuleAccessService::singleton();
-            $moduleService->remove(
+            AclProxy::revokeRule(new AccessRule(
+                AccessRule::GRANT,
                 'http://www.tao.lu/Ontologies/TAO.rdf#TaoManagerRole',
-                'http://www.tao.lu/Ontologies/taoFuncACL.rdf#m_tao_ExtensionsManager'
-            );
+                ['ext' => 'tao']
+            ));
 
             AclProxy::applyRule(new AccessRule('grant', 'http://www.tao.lu/Ontologies/TAO.rdf#SysAdminRole', ['ext' => 'tao','mod' => 'ExtensionsManager']));
             AclProxy::applyRule(new AccessRule('grant', 'http://www.tao.lu/Ontologies/TAO.rdf#TaoManagerRole', ['ext' => 'tao','mod' => 'Api']));
@@ -659,7 +276,7 @@ class Updater extends \common_ext_ExtensionUpdater
         if ($this->isVersion('14.20.0')) {
             if (!$this->getServiceManager()->has(OauthService::SERVICE_ID)) {
                 $this->getServiceManager()->register(OauthService::SERVICE_ID, new OauthService([
-                    OauthService::OPTION_DATASTORE => new DataStore([
+                    OauthService::OPTION_DATA_STORE => new DataStore([
                         DataStore::OPTION_NONCE_STORE => new NoNonce()
                     ])
                 ]));
@@ -1230,34 +847,10 @@ class Updater extends \common_ext_ExtensionUpdater
             }
             $this->setVersion('39.1.0');
         }
-        $this->skip('39.1.0', '39.3.2');
 
-        if ($this->isVersion('39.3.2')) {
-            OntologyUpdater::syncModels();
-
-            $models = (new tao_install_utils_ModelCreator(LOCAL_NAMESPACE))->getLanguageModels();
-            $rdf = ModelManager::getModel()->getRdfInterface();
-            foreach (array_shift($models) as $file) {
-                $iterator = new FileIterator($file, 1);
-                foreach ($iterator as $triple) {
-                    $rdf->remove($triple);
-                    $rdf->add($triple);
-                }
-            }
-            $this->setVersion('39.3.3');
-        }
-
-        $this->skip('39.3.3', '39.5.5');
-
-        if ($this->isVersion('39.5.5')) {
-            /** @var UnionSearchService|ConfigurableService $service */
-            $service = new UnionSearchService(['services' => []]);
-            $this->getServiceManager()->register(UnionSearchService::SERVICE_ID, $service);
-
-            $this->setVersion('39.6.0');
-        }
-
-        $this->skip('39.6.0', '40.3.3');
+        //Removed update from 39.3.2 -> 39.3.3 due to broken operation cause by removal of `tao_install_utils_ModelCreator` class
+        //Related PR https://github.com/oat-sa/tao-core/pull/2404. Update is re-played on 40.9.5 to 40.9.6
+        $this->skip('39.1.0', '40.3.3');
 
         if ($this->isVersion('40.3.3')) {
             $extManager = $this->getServiceManager()->get(\common_ext_ExtensionsManager::SERVICE_ID);
@@ -1350,16 +943,60 @@ class Updater extends \common_ext_ExtensionUpdater
 
             $this->setVersion('41.2.0');
         }
-
         $this->skip('41.2.0', '41.5.1');
 
         if ($this->isVersion('41.5.1')) {
             $this->addReport(
-                Report::createInfo('To make SecureResourceService use cache please run \oat\tao\scripts\install\InstallSecureResourceCachedService script')
+                Report::createInfo('To make SecureResourceService use cache see example from default config at: tao/config/default/SecureResourceService.conf.php ')
             );
             $this->setVersion('41.6.0');
         }
 
-        $this->skip('41.6.0', '41.8.0');
+        $this->skip('41.6.0', '41.7.0');
+        if ($this->isVersion('41.7.0')) {
+            $oauthService = $this->getServiceManager()->get(OauthService::SERVICE_ID);
+            $oauthService->setOption(OauthService::OPTION_LOCKOUT_SERVICE, new NoLockout());
+            $this->getServiceManager()->register(OauthService::SERVICE_ID, $oauthService);
+            $this->setVersion('41.8.0');
+        }
+
+        $this->skip('41.8.0', '42.0.3');
+        if ($this->isVersion('42.0.3')) {
+            $this->getServiceManager()->unregister('tao/UnionSearchService');
+            $this->setVersion('42.0.4');
+        }
+
+        $this->skip('42.0.4', '42.10.2');
+
+        if ($this->isVersion('42.10.2')) {
+            AclProxy::applyRule(
+                new AccessRule(
+                    AccessRule::GRANT,
+                    TaoRoles::BACK_OFFICE,
+                    [
+                        'ext' => 'tao',
+                        'mod' => 'Languages',
+                        'act' => 'index',
+                    ]
+                )
+            );
+
+            $this->setVersion('42.11.0');
+        }
+
+        $this->skip('42.11.0', '44.1.1');
+
+        if ($this->isVersion('44.1.1')) {
+            $this->runExtensionScript(RegisterValueCollectionServices::class);
+
+            $this->setVersion('44.2.0');
+        }
+
+        $this->skip('44.2.0', '44.4.0');
+
+        //Updater files are deprecated. Please use migrations.
+        //See: https://github.com/oat-sa/generis/wiki/Tao-Update-Process
+
+        $this->setVersion($this->getExtension()->getManifest()->getVersion());
     }
 }
