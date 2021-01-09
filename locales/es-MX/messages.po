@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.3.0-sprint110\n"
-"PO-Revision-Date: 2019-08-30T08:31:07\n"
+"Project-Id-Version: TAO 3.4.0-sprint137\n"
+"PO-Revision-Date: 2020-09-11T08:29:31\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: es-MX\n"
@@ -148,6 +148,9 @@ msgstr ""
 msgid "A message with further instructions has been sent to your email address: %s"
 msgstr "Un mensaje con instrucciones adicionales ha sido enviada a su e-mail: %s"
 
+msgid "About"
+msgstr ""
+
 msgid "abs"
 msgstr ""
 
@@ -184,6 +187,9 @@ msgstr "Acciones"
 msgid "Add"
 msgstr "Agregar"
 
+msgid "Add / Edit lists"
+msgstr ""
+
 msgid "Add a CSV file"
 msgstr "Agregar archivo CSV"
 
@@ -208,9 +214,6 @@ msgstr ""
 
 msgid "Adding the new resource has failed"
 msgstr ""
-
-msgid "Advanced Mode"
-msgstr "Modo avanzado"
 
 msgid "Advanced search, add filters"
 msgstr ""
@@ -368,10 +371,10 @@ msgstr ""
 msgid "Calendar"
 msgstr "Calendario"
 
-msgid "Cancel"
+msgid "cancel"
 msgstr ""
 
-msgid "cancel"
+msgid "Cancel"
 msgstr ""
 
 msgid "cancel the action"
@@ -402,11 +405,11 @@ msgstr "Cambiar la contraseña"
 msgid "Change the sign of the current operand"
 msgstr ""
 
-msgid "Check all"
-msgstr "Seleccionar todo"
-
 msgid "Check All"
 msgstr "Seleccionar Todo"
+
+msgid "Check all"
+msgstr "Seleccionar todo"
 
 msgid "Check-in"
 msgstr "Registrarse"
@@ -447,10 +450,10 @@ msgstr ""
 msgid "Clear expression"
 msgstr ""
 
-msgid "Clear history"
+msgid "Clear History"
 msgstr ""
 
-msgid "Clear History"
+msgid "Clear history"
 msgstr ""
 
 msgid "Clear selection"
@@ -464,6 +467,9 @@ msgstr ""
 
 msgid "Close"
 msgstr "Cerrar"
+
+msgid "Close dialog"
+msgstr ""
 
 msgid "Close message"
 msgstr "Cerrar mensaje"
@@ -564,13 +570,16 @@ msgstr "Datos importados exitosamente"
 msgid "Data imported. Some records are invalid."
 msgstr ""
 
-msgid "Data language"
-msgstr "Idioma de datos"
-
 msgid "Data Language"
 msgstr "Idioma de Datos"
 
+msgid "Data language"
+msgstr "Idioma de datos"
+
 msgid "Data not imported. All records are invalid."
+msgstr ""
+
+msgid "Data source URI"
 msgstr ""
 
 msgid "Date"
@@ -700,9 +709,6 @@ msgstr "Editar clase %s"
 msgid "Edit Instance"
 msgstr "Editar instancia"
 
-msgid "Edit sources that can embed this platform in an iFrame"
-msgstr ""
-
 msgid "Element"
 msgstr ""
 
@@ -740,6 +746,9 @@ msgid "Error in syntax"
 msgstr ""
 
 msgid "Error in value"
+msgstr ""
+
+msgid "Error: %s"
 msgstr ""
 
 msgid "Examples:"
@@ -858,6 +867,9 @@ msgstr ""
 msgid "Forbid for all domains"
 msgstr ""
 
+msgid "Force HTTPS on this platform"
+msgstr ""
+
 msgid "Force Release"
 msgstr "Forzar liberación"
 
@@ -891,6 +903,12 @@ msgstr ""
 msgid "Go Back"
 msgstr "Regresar"
 
+msgid "go back to home page"
+msgstr ""
+
+msgid "Go to item"
+msgstr ""
+
 msgid "Height"
 msgstr "Altura"
 
@@ -899,6 +917,9 @@ msgstr "Hola,%s <br>Usted indicó que ha olvidado su contraseña TAO."
 
 msgid "Hide detailed report"
 msgstr "Ocultar reporte dellado"
+
+msgid "Hide password"
+msgstr ""
 
 msgid "Highlight all"
 msgstr ""
@@ -969,10 +990,10 @@ msgstr ""
 msgid "impossible to update task status"
 msgstr ""
 
-msgid "In progress"
+msgid "In Progress"
 msgstr ""
 
-msgid "In Progress"
+msgid "In progress"
 msgstr ""
 
 msgid "Inclusive (AND)"
@@ -1077,6 +1098,9 @@ msgstr "artículos por página"
 msgid "Label"
 msgstr "Etiqueta"
 
+msgid "Label Path"
+msgstr ""
+
 msgid "Language"
 msgstr "Idioma"
 
@@ -1104,11 +1128,23 @@ msgstr "Lista"
 msgid "List - Multiple choice - Check box"
 msgstr "Lista - Opciones múltiples - Selección"
 
+msgid "List - Multiple choice - Search input"
+msgstr ""
+
 msgid "List - Single choice - Drop down"
 msgstr "Lista - Opción sencilla - Lista de selección"
 
 msgid "List - Single choice - Radio button"
 msgstr "Lista - Opción sencilla - Selección única"
+
+msgid "List - Single choice - Search input"
+msgstr ""
+
+msgid "List item URI duplications found"
+msgstr ""
+
+msgid "List values"
+msgstr ""
 
 msgid "ln"
 msgstr ""
@@ -1158,7 +1194,19 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
+msgid "Main Menu"
+msgstr ""
+
+msgid "Maintenance service is already installed."
+msgstr ""
+
 msgid "Maintenance service must have a persistence option."
+msgstr ""
+
+msgid "Maintenance service was installed. Platform is disabled."
+msgstr ""
+
+msgid "Maintenance service was installed. Platform is enabled."
 msgstr ""
 
 msgid "Maintenance storage driver is not set"
@@ -1304,13 +1352,16 @@ msgstr "No se seleccionó ningún archivo"
 msgid "No files"
 msgstr "Sin archivos"
 
+msgid "No item found. Please try other search criteria."
+msgstr ""
+
 msgid "no label"
 msgstr "sin etiqueta"
 
-msgid "No preview available"
+msgid "No Preview available"
 msgstr ""
 
-msgid "No Preview available"
+msgid "No preview available"
 msgstr ""
 
 msgid "No results found"
@@ -1446,6 +1497,9 @@ msgstr ""
 msgid "Please contact your system administrator."
 msgstr ""
 
+msgid "Please define your search in the search panel."
+msgstr ""
+
 msgid "Please download the track and listen offline."
 msgstr ""
 
@@ -1459,9 +1513,6 @@ msgid "Please provide a reason"
 msgstr "Por favor proporcione una razón"
 
 msgid "Please report bugs, ideas, comments or feedback on the TAO Forum"
-msgstr ""
-
-msgid "Please try in %s."
 msgstr ""
 
 msgid "Please wait"
@@ -1500,9 +1551,6 @@ msgstr ""
 #, tao-public
 msgid "Properties"
 msgstr "Propiedades"
-
-msgid "Property\'s label field is required"
-msgstr "La etiqueta del campo propiedades es requerida"
 
 msgid "Provided URL is not valid"
 msgstr ""
@@ -1712,6 +1760,9 @@ msgstr "Buscar %s"
 msgid "Search by properties"
 msgstr ""
 
+msgid "Search Item"
+msgstr ""
+
 msgid "Search sub-classes"
 msgstr "Buscar sub-clases"
 
@@ -1780,11 +1831,11 @@ msgstr "Configuración actualizada"
 msgid "Show detailed report"
 msgstr "Muestrar reporte detallado"
 
-msgid "Sign change"
+msgid "Show password"
 msgstr ""
 
-msgid "Simple Mode"
-msgstr "Modo simple"
+msgid "Sign change"
+msgstr ""
 
 msgid "sin"
 msgstr ""
@@ -1799,6 +1850,9 @@ msgid "Size"
 msgstr "Tamaño"
 
 msgid "Some resources have not been moved: %s"
+msgstr ""
+
+msgid "Something unexpected happened."
 msgstr ""
 
 msgid "Sources that can embed this platform in an iFrame"
@@ -1873,6 +1927,24 @@ msgstr "Inicio TAO"
 msgid "TAO Login"
 msgstr "Iniciar sesión TAO"
 
+msgid "TAO platform is already on live mode since %s"
+msgstr ""
+
+msgid "TAO platform is already on maintenance mode since %s"
+msgstr ""
+
+msgid "TAO platform is live since %s."
+msgstr ""
+
+msgid "TAO platform is now live. It was in maintenance since %s"
+msgstr ""
+
+msgid "TAO platform is now under maintenance. It was in maintenance since %s"
+msgstr ""
+
+msgid "TAO platform is under maintenance since %s"
+msgstr ""
+
 msgid "Task %s has been cancelled, message was not processed."
 msgstr ""
 
@@ -1904,16 +1976,16 @@ msgid "Text - Short - Field"
 msgstr "Texto - Short - Campo"
 
 msgid "The action will be applied to"
-msgstr "La acción se aplicará a"
+msgstr "La acción sera aplicada a"
 
 msgid "The action will be applied to the following"
-msgstr ""
+msgstr "La acción sera aplicada a lo siguiente"
 
 msgid "The action will not be applied to "
-msgstr ""
+msgstr "La acción no sera aplicada a"
 
 msgid "The action will not be applied to the following"
-msgstr ""
+msgstr "La acción no sera aplicada a lo siguiente"
 
 msgid "The column "
 msgstr "La columna "
@@ -2044,7 +2116,13 @@ msgstr "Parámetros de traducción"
 msgid "Translation saved"
 msgstr "Traducción guardada"
 
+msgid "Transport Layer Security"
+msgstr ""
+
 msgid "Tree - Multiple node choice "
+msgstr ""
+
+msgid "Tree values"
 msgstr ""
 
 msgid "True"
@@ -2116,10 +2194,10 @@ msgstr ""
 msgid "Unary operator -"
 msgstr ""
 
-msgid "Uncheck All"
+msgid "Uncheck all"
 msgstr ""
 
-msgid "Uncheck all"
+msgid "Uncheck All"
 msgstr ""
 
 msgid "Undefined amount of the pages for pagination"
@@ -2161,7 +2239,19 @@ msgstr "Subir"
 msgid "Upload into:"
 msgstr "Subir en:"
 
+msgid "URI Path"
+msgstr ""
+
 msgid "Usage: ImportRdf RDF_FILE [MODEL_ID]"
+msgstr ""
+
+msgid "USAGE: please provide a valid extension id as second parameter"
+msgstr ""
+
+msgid "USAGE: please provide a valid service name as first parameter"
+msgstr ""
+
+msgid "USAGE: please provide the service name as first parameter"
 msgstr ""
 
 msgid "Use a term"

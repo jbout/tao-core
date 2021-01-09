@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,6 +22,7 @@ namespace oat\tao\test\unit\providers;
 
 use common_exception_InconsistentData;
 use oat\tao\model\providers\ProviderModule;
+use oat\generis\test\TestCase;
 
 /**
  * Test the ProviderModule pojo
@@ -28,7 +30,7 @@ use oat\tao\model\providers\ProviderModule;
  * @author Bertrand Chevrier <bertrand@taotesting.com>
  * @author Jean-Sébastien Conan <jean-sebastien@taotesting.com>
  */
-class ProviderModuleTest extends \PHPUnit_Framework_TestCase
+class ProviderModuleTest extends TestCase
 {
 
     /**
@@ -55,7 +57,7 @@ class ProviderModuleTest extends \PHPUnit_Framework_TestCase
                 'description' => 'The best foo ever',
                 'active' => true,
                 'tags' => ['required']
-            ]
+                ]
             ], [
                 [
                     'id' => '12',
@@ -75,60 +77,46 @@ class ProviderModuleTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
-    /**
-     * @expectedException common_exception_InconsistentData
-     */
     public function testConstructBadId()
     {
+        $this->expectException(common_exception_InconsistentData::class);
         new ProviderModule(12, 'foo', 'bar');
     }
 
 
-    /**
-     * @expectedException common_exception_InconsistentData
-     */
     public function testConstructEmptyId()
     {
+        $this->expectException(common_exception_InconsistentData::class);
         new ProviderModule('', 'foo', 'bar');
     }
 
-    /**
-     * @expectedException common_exception_InconsistentData
-     */
     public function testConstructBadModule()
     {
+        $this->expectException(common_exception_InconsistentData::class);
         new ProviderModule('foo', true, 'bar');
     }
 
-    /**
-     * @expectedException common_exception_InconsistentData
-     */
     public function testConstructiEmptyModule()
     {
+        $this->expectException(common_exception_InconsistentData::class);
         new ProviderModule('foo', '', 'bar');
     }
 
-    /**
-     * @expectedException common_exception_InconsistentData
-     */
     public function testConstructBadCategory()
     {
+        $this->expectException(common_exception_InconsistentData::class);
         new ProviderModule('foo', 'bar', []);
     }
 
-    /**
-     * @expectedException common_exception_InconsistentData
-     */
     public function testConstructNoCategory()
     {
+        $this->expectException(common_exception_InconsistentData::class);
         new ProviderModule('foo', 'bar', null);
     }
 
-    /**
-     * @expectedException common_exception_InconsistentData
-     */
     public function testFromArrayNoRequiredData()
     {
+        $this->expectException(common_exception_InconsistentData::class);
         ProviderModule::fromArray([]);
     }
 

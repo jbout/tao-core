@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,7 +20,9 @@
  *
  */
 
+use oat\oatbox\service\ServiceManager;
 use oat\oatbox\user\UserLanguageServiceInterface;
+use oat\oatbox\user\UserTimezoneServiceInterface;
 
 /**
  * This container initialize the settings form.
@@ -46,6 +49,11 @@ class tao_actions_form_UserSettings extends tao_helpers_form_FormContainer
         $this->form->setActions($actions);
     }
 
+    private function getServiceManager(): ServiceManager
+    {
+        return oat\oatbox\service\ServiceManager::getServiceManager();
+    }
+
     /**
      * @inheritdoc
      * @throws common_Exception
@@ -54,19 +62,19 @@ class tao_actions_form_UserSettings extends tao_helpers_form_FormContainer
     protected function initElements()
     {
         $langService = tao_models_classes_LanguageService::singleton();
-        $userLangService = oat\oatbox\service\ServiceManager::getServiceManager()->get(UserLanguageServiceInterface::class);
+        $userLangService = $this->getServiceManager()->get(UserLanguageServiceInterface::class);
 
         // Retrieve languages available for a GUI usage.
         $guiUsage = new core_kernel_classes_Resource(tao_models_classes_LanguageService::INSTANCE_LANGUAGE_USAGE_GUI);
         $guiOptions = [];
-        foreach($langService->getAvailableLanguagesByUsage($guiUsage) as $lang){
+        foreach ($langService->getAvailableLanguagesByUsage($guiUsage) as $lang) {
             $guiOptions[tao_helpers_Uri::encode($lang->getUri())] = $lang->getLabel();
         }
 
         // Retrieve languages available for a Data usage.
         $dataUsage = new core_kernel_classes_Resource(tao_models_classes_LanguageService::INSTANCE_LANGUAGE_USAGE_DATA);
         $dataOptions = [];
-        foreach($langService->getAvailableLanguagesByUsage($dataUsage) as $lang){
+        foreach ($langService->getAvailableLanguagesByUsage($dataUsage) as $lang) {
             $dataOptions[tao_helpers_Uri::encode($lang->getUri())] = $lang->getLabel();
         }
 
@@ -83,15 +91,27 @@ class tao_actions_form_UserSettings extends tao_helpers_form_FormContainer
             $this->form->addElement($dataLangElement);
         }
 
-        $tzElement = tao_helpers_form_FormFactory::getElement('timezone', 'Combobox');
-        $tzElement->setDescription(__('Time zone'));
-        $options = [];
-        foreach (DateTimeZone::listIdentifiers() as $id) {
-            $options[$id] = $id;
-        }
-        $tzElement->setOptions($options);
-
-        $this->form->addElement($tzElement);
+        $this->addTimezoneEl($this->form);
     }
 
+    private function getUserTimezoneService(): UserTimezoneServiceInterface
+    {
+        return $this->getServiceManager()->get(UserTimezoneServiceInterface::SERVICE_ID);
+    }
+
+    private function addTimezoneEl($form): void
+    {
+        if ($this->getUserTimezoneService()->isUserTimezoneEnabled()) {
+            $tzElement = tao_helpers_form_FormFactory::getElement('timezone', 'Combobox');
+            $tzElement->setDescription(__('Time zone'));
+
+            $options = [];
+            foreach (DateTimeZone::listIdentifiers() as $id) {
+                $options[$id] = $id;
+            }
+            $tzElement->setOptions($options);
+
+            $form->addElement($tzElement);
+        }
+    }
 }

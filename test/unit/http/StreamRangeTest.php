@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,6 +20,7 @@
  */
 
 use oat\tao\model\stream\StreamRange;
+use oat\tao\model\stream\StreamRangeException;
 use Slim\Http\Stream;
 
 /**
@@ -26,7 +28,10 @@ use Slim\Http\Stream;
  * @package tao
  * @author Aleh Hutnikau <hutnikau@1pt.com>
  */
-class StreamRangeTest extends \PHPUnit_Framework_TestCase
+
+use oat\generis\test\TestCase;
+
+class StreamRangeTest extends TestCase
 {
 
 
@@ -42,10 +47,13 @@ class StreamRangeTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider wrongRangesProvider
-     * @expectedException \oat\tao\model\stream\StreamRangeException
+     * @param $stream
+     * @param $rangeValue
+     * @throws StreamRangeException
      */
     public function testConstructExcept($stream, $rangeValue)
     {
+        $this->expectException(StreamRangeException::class);
         $range = new StreamRange($stream, $rangeValue);
     }
 
@@ -126,7 +134,7 @@ class StreamRangeTest extends \PHPUnit_Framework_TestCase
      */
     private function getStream($string)
     {
-        $resource = fopen('php://memory','r+');
+        $resource = fopen('php://memory', 'r+');
         fwrite($resource, $string);
         rewind($resource);
         return new Stream($resource);

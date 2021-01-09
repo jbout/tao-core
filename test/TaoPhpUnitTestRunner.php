@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,10 +20,11 @@
  *               2012-2016 Open Assessment Technologies SA
  *
  */
+
 namespace oat\tao\test;
 
-use League\Flysystem\Adapter\Local;
 use League\Flysystem\Memory\MemoryAdapter;
+use oat\generis\persistence\PersistenceManager;
 use oat\generis\test\GenerisPhpUnitTestRunner;
 use oat\oatbox\filesystem\Directory;
 use oat\oatbox\filesystem\FileSystemService;
@@ -32,17 +34,19 @@ use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorAwareTrait;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Prophecy\Argument;
+use oat\generis\test\KeyValueMockTrait;
 
 /**
  * Help you to run the test into the TAO Context
  * @package tao
  * @deprecated
  */
-abstract class  TaoPhpUnitTestRunner extends GenerisPhpUnitTestRunner implements ServiceLocatorAwareInterface
+abstract class TaoPhpUnitTestRunner extends GenerisPhpUnitTestRunner implements ServiceLocatorAwareInterface
 {
     use ServiceLocatorAwareTrait;
+    use KeyValueMockTrait;
 
-	const SESSION_KEY = 'TAO_TEST_SESSION';
+    const SESSION_KEY = 'TAO_TEST_SESSION';
     /**
      * @var boolean
      */
@@ -63,10 +67,11 @@ abstract class  TaoPhpUnitTestRunner extends GenerisPhpUnitTestRunner implements
     /**
      * shared methods for test initialization
      */
-    public static function initTest(){
+    public static function initTest()
+    {
 
         //connect the API
-        if(!self::$connected){
+        if (!self::$connected) {
             \common_session_SessionManager::startSession(new \common_test_TestUserSession());
             self::$connected = true;
         }
@@ -76,7 +81,7 @@ abstract class  TaoPhpUnitTestRunner extends GenerisPhpUnitTestRunner implements
      * At tear down,
      *  - Remove temporary file system created to testing
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->removeTempFileSystem();
     }
@@ -127,7 +132,7 @@ abstract class  TaoPhpUnitTestRunner extends GenerisPhpUnitTestRunner implements
      * @param string $key identifier of the persistence
      * @return \common_persistence_Manager
      */
-    public function getSqlMock($key)
+    public function getSqlMock($key): PersistenceManager
     {
         return parent::getSqlMock($key);
     }
@@ -146,22 +151,25 @@ abstract class  TaoPhpUnitTestRunner extends GenerisPhpUnitTestRunner implements
             $this->tempFileSystemId = 'unit-test-' . uniqid();
 
             $adapters = $fileSystemService->getOption(FileSystemService::OPTION_ADAPTERS);
+            $tmpDir = \tao_helpers_File::createTempDir();
             if (class_exists('League\Flysystem\Memory\MemoryAdapter')) {
-                $adapters[$this->tempFileSystemId] = array(
+                $adapters[$this->tempFileSystemId] = [
                     'class' => MemoryAdapter::class
-                );
+                ];
             } else {
-                $adapters[$this->tempFileSystemId] = array(
+                $adapters[$this->tempFileSystemId] = [
                     'class' => FileSystemService::FLYSYSTEM_LOCAL_ADAPTER,
-                    'options' => array('root' => '/tmp/testing')
-                );
+                    'options' => ['root' => $tmpDir]
+                ];
             }
             $fileSystemService->setOption(FileSystemService::OPTION_ADAPTERS, $adapters);
-            $fileSystemService->setOption(FileSystemService::OPTION_FILE_PATH, '/tmp/testing');
+            $fileSystemService->setOption(FileSystemService::OPTION_FILE_PATH, $tmpDir);
+            $fileSystemService->setOption(FileSystemService::OPTION_DIRECTORIES, [$this->tempFileSystemId => $this->tempFileSystemId]);
 
-            $fileSystemService->setServiceLocator($this->getServiceManagerProphecy(array(
+
+            $fileSystemService->setServiceLocator($this->getServiceManagerProphecy([
                 FileSystemService::SERVICE_ID => $fileSystemService
-            )));
+            ]));
 
             $this->tempDirectory = $fileSystemService->getDirectory($this->tempFileSystemId);
         }
@@ -177,7 +185,7 @@ abstract class  TaoPhpUnitTestRunner extends GenerisPhpUnitTestRunner implements
      *
      * @return mixed Method return.
      */
-    public function invokeProtectedMethod($object, $methodName, array $parameters = array())
+    public function invokeProtectedMethod($object, $methodName, array $parameters = [])
     {
         $reflection = new \ReflectionClass(get_class($object));
         $method = $reflection->getMethod($methodName);
@@ -192,8 +200,9 @@ abstract class  TaoPhpUnitTestRunner extends GenerisPhpUnitTestRunner implements
      * @param type $propertyName
      * @return mixed
      */
-    protected function getInaccessibleProperty($object , $propertyName) {
-        $property = new \ReflectionProperty(get_class($object) , $propertyName);
+    protected function getInaccessibleProperty($object, $propertyName)
+    {
+        $property = new \ReflectionProperty(get_class($object), $propertyName);
         $property->setAccessible(true);
         $value = $property->getValue($object);
         $property->setAccessible(false);
@@ -206,8 +215,9 @@ abstract class  TaoPhpUnitTestRunner extends GenerisPhpUnitTestRunner implements
      * @param type $value
      * @return \oat\tao\test\TaoPhpUnitTestRunner
      */
-    protected function setInaccessibleProperty($object , $propertyName, $value) {
-        $property = new \ReflectionProperty(get_class($object) , $propertyName);
+    protected function setInaccessibleProperty($object, $propertyName, $value)
+    {
+        $property = new \ReflectionProperty(get_class($object), $propertyName);
         $property->setAccessible(true);
         $property->setValue($object, $value);
         $property->setAccessible(false);
@@ -220,18 +230,7 @@ abstract class  TaoPhpUnitTestRunner extends GenerisPhpUnitTestRunner implements
     protected function removeTempFileSystem()
     {
         if ($this->tempDirectory) {
-            /** @var FileSystemService $fileSystemService */
-            $fileSystemService = $this->getServiceManagerProphecy()
-                ->get(FileSystemService::SERVICE_ID);
-
-            $tempAdapter = $fileSystemService
-                ->getFileSystem($this->tempFileSystemId)
-                ->getAdapter();
-
-            if ($tempAdapter instanceof Local) {
-                $localPath = $this->getInaccessibleProperty($tempAdapter, 'pathPrefix');
-                $this->rrmdir($localPath);
-            }
+            $this->tempDirectory->deleteSelf();
         }
     }
 
@@ -242,8 +241,8 @@ abstract class  TaoPhpUnitTestRunner extends GenerisPhpUnitTestRunner implements
      */
     protected function rrmdir($dir)
     {
-        foreach(glob($dir . '/*') as $file) {
-            if(is_dir($file)) {
+        foreach (glob($dir . '/*') as $file) {
+            if (is_dir($file)) {
                 $this->rrmdir($file);
             } else {
                 unlink($file);

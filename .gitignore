@@ -4,6 +4,7 @@
 /.settings/
 install/log/install.log
 views/build/.htaccess
+views/build/config/aws.json
 views/js/test/.htaccess
 /views/js/lib/jsTree/themes/scss/style.css
 /views/js/lib/jsTree/themes/scss/style.css.map
@@ -71,3 +72,9 @@ Session.vim
 *~
 
 node_modules
+
+vendor/
+
+composer.lock
+
+

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -34,8 +35,13 @@ interface WebhookEventLogInterface
     /**
      * @param WebhookTaskContext $webhookTaskContext
      * @param int $actualHttpStatusCode
+     * @param string|null $responseBody
      */
-    public function storeInvalidHttpStatusLog(WebhookTaskContext $webhookTaskContext, $actualHttpStatusCode);
+    public function storeInvalidHttpStatusLog(
+        WebhookTaskContext $webhookTaskContext,
+        $actualHttpStatusCode,
+        $responseBody = null
+    );
 
     /**
      * @param WebhookTaskContext $webhookTaskContext

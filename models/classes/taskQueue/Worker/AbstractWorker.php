@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -188,6 +189,9 @@ abstract class AbstractWorker implements WorkerInterface, ServiceManagerAwareInt
             $user = $this->getUserFactoryService()->createUser($this->getResource($task->getOwner()));
             $session = new StatelessSession($user);
             $sessionService->setSession($session);
+        // Create Anonymous session if no owner
+        } else if (!$task->getOwner()) {
+            \common_session_SessionManager::endSession();
         }
     }
 

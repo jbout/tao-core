@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,7 +21,10 @@
 
 namespace oat\tao\test\integration\model\taskQueue;
 
+use common_exception_Error;
+use InvalidArgumentException;
 use oat\generis\test\TestCase;
+use oat\oatbox\mutex\LockService;
 use oat\tao\model\taskQueue\Task\TaskSerializerService;
 use oat\tao\model\taskQueue\Queue;
 use oat\tao\model\taskQueue\Queue\Broker\InMemoryQueueBroker;
@@ -31,56 +35,51 @@ use oat\tao\test\Asset\CallableFixture;
 use oat\oatbox\log\LoggerService;
 use oat\tao\model\taskQueue\TaskLogInterface;
 use oat\tao\model\taskQueue\TaskLog;
+use Symfony\Component\Lock\Factory;
+use Symfony\Component\Lock\LockInterface;
+use oat\generis\test\MockObject;
 
 class QueueDispatcherTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage  Queues needs to be set
-     */
     public function testDispatcherWhenQueuesAreEmptyThenThrowException()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Queues needs to be set');
         new QueueDispatcher([]);
     }
 
-    /**
-     * @expectedException \common_exception_Error
-     * @expectedExceptionMessage  Task Log service needs to be set.
-     */
     public function testDispatcherNoTaskLogThenThrowException()
     {
+        $this->expectException(common_exception_Error::class);
+        $this->expectExceptionMessage('Task Log service needs to be set.');
         new QueueDispatcher([
-            QueueDispatcher::OPTION_QUEUES =>[
+            QueueDispatcher::OPTION_QUEUES => [
                 new Queue('queueA', new InMemoryQueueBroker())
             ]
         ]);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectExceptionMessageRegExp  /There are duplicated Queue names/
-     */
     public function testDispatcherWhenDuplicatedQueuesAreSetThenThrowException()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('/There are duplicated Queue names/');
         new QueueDispatcher([
-            QueueDispatcher::OPTION_QUEUES =>[
+            QueueDispatcher::OPTION_QUEUES => [
                 new Queue('queueA', new InMemoryQueueBroker()),
                 new Queue('queueA', new InMemoryQueueBroker())
             ]
         ]);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectExceptionMessageRegExp  There are duplicated Queue names/
-     */
     public function testDispatcherWhenNotRegisteredQueueIsUsedForTaskThenThrowException()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('There are duplicated Queue names/');
         new QueueDispatcher([
             QueueDispatcher::OPTION_QUEUES => [
                 new Queue('queueA', new InMemoryQueueBroker()),
@@ -96,7 +95,7 @@ class QueueDispatcherTest extends TestCase
     {
         $taskMock = $this->getMockForAbstractClass(AbstractTask::class, [], "", false);
 
-        /** @var QueueDispatcher|\PHPUnit_Framework_MockObject_MockObject $queueMock */
+        /** @var QueueDispatcher|MockObject $queueMock */
         $queueMock = $this->getMockBuilder(QueueDispatcher::class)
             ->disableOriginalConstructor()
             ->setMethods(['enqueue'])
@@ -106,12 +105,12 @@ class QueueDispatcherTest extends TestCase
             ->method('enqueue')
             ->willReturn($this->returnValue(true));
 
-        $this->assertInstanceOf(CallbackTaskInterface::class, $queueMock->createTask($taskMock, []) );
+        $this->assertInstanceOf(CallbackTaskInterface::class, $queueMock->createTask($taskMock, []));
     }
 
     public function testCreateTaskWhenUsingStaticClassMethodCallShouldReturnCallbackTask()
     {
-        /** @var QueueDispatcher|\PHPUnit_Framework_MockObject_MockObject $queueMock */
+        /** @var QueueDispatcher|MockObject $queueMock */
         $queueMock = $this->getMockBuilder(QueueDispatcher::class)
             ->disableOriginalConstructor()
             ->setMethods(['enqueue'])
@@ -121,7 +120,7 @@ class QueueDispatcherTest extends TestCase
             ->method('enqueue')
             ->willReturn($this->returnValue(true));
 
-        $this->assertInstanceOf(CallbackTaskInterface::class, $queueMock->createTask([CallableFixture::class, 'exampleStatic'], []) );
+        $this->assertInstanceOf(CallbackTaskInterface::class, $queueMock->createTask([CallableFixture::class, 'exampleStatic'], []));
     }
 
     public function testOneTimeWorkerHasServiceLocator()
@@ -130,12 +129,22 @@ class QueueDispatcherTest extends TestCase
         $taskLogMock = $this->getMockBuilder(TaskLog::class)
             ->disableOriginalConstructor()
             ->getMock();
+        $lock = $this->getMockBuilder(LockInterface::class)->disableOriginalConstructor()->getMock();
+        $lock->method('acquire')->willReturn(true);
+        $lock->method('release')->willReturn(true);
 
+        $lockFactory = $this->getMockBuilder(Factory::class)->disableOriginalConstructor()->getMock();
+        $lockFactory->method('createLock')->willReturn($lock);
+
+        $lockService = $this->getMockBuilder(LockService::class)->disableOriginalConstructor()->getMock();
+        $lockService->method('getLockFactory')->willReturn($lockFactory);
         $serviceManager = $this->getServiceLocatorMock([
             TaskLogInterface::SERVICE_ID => $taskLogMock,
             LoggerService::SERVICE_ID => $this->createMock(LoggerService::class),
             TaskSerializerService::SERVICE_ID => $this->createMock(TaskSerializerService::class),
+            LockService::SERVICE_ID => $lockService
         ]);
+
 
         $dispatcher = new QueueDispatcher([
             QueueDispatcher::OPTION_QUEUES => [
@@ -147,6 +156,5 @@ class QueueDispatcherTest extends TestCase
         $dispatcher->setServiceLocator($serviceManager);
 
         $this->assertTrue($dispatcher->enqueue($taskMock));
-
     }
 }

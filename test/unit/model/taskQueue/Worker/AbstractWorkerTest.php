@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -42,85 +43,85 @@ use oat\tao\model\taskQueue\TaskLog\Entity\EntityInterface;
 use oat\tao\model\taskQueue\TaskLogInterface;
 use oat\tao\model\taskQueue\Worker\AbstractWorker;
 use oat\tao\model\webhooks\task\WebhookTask;
-use PHPUnit_Framework_MockObject_MockObject;
+use oat\generis\test\MockObject;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 class AbstractWorkerTest extends TestCase
 {
-    /** @var QueuerInterface | PHPUnit_Framework_MockObject_MockObject */
+    /** @var QueuerInterface | MockObject */
     private $queue;
 
-    /** @var TaskLogInterface | PHPUnit_Framework_MockObject_MockObject */
+    /** @var TaskLogInterface | MockObject */
     private $taskLog;
 
     /** @var DummyWorker */
     private $subject;
 
     /**
-     * @var ServiceLocatorInterface|PHPUnit_Framework_MockObject_MockObject
+     * @var ServiceLocatorInterface|MockObject
      */
     private $serviceLocatorMock;
 
-    /** @var TaskInterface | PHPUnit_Framework_MockObject_MockObject $task */
+    /** @var TaskInterface | MockObject $task */
     private $taskMock;
 
     /**
-     * @var SessionService | PHPUnit_Framework_MockObject_MockObject
+     * @var SessionService | MockObject
      */
     private $sessionServiceMock;
 
     /**
-     * @var common_session_Session | PHPUnit_Framework_MockObject_MockObject
+     * @var common_session_Session | MockObject
      */
     private $commonSession;
     /**
-     * @var User | PHPUnit_Framework_MockObject_MockObject
+     * @var User | MockObject
      */
     private $userMock;
     /**
-     * @var UserFactoryServiceInterface | PHPUnit_Framework_MockObject_MockObject
+     * @var UserFactoryServiceInterface | MockObject
      */
     private $userFactoryServiceMock;
 
     /**
-     * @var common_user_User | PHPUnit_Framework_MockObject_MockObject
+     * @var common_user_User | MockObject
      */
     private $commonUserMock;
 
     /**
-     * @var Ontology | PHPUnit_Framework_MockObject_MockObject
+     * @var Ontology | MockObject
      */
     private $modelMock;
 
     /**
-     * @var core_kernel_classes_Resource | PHPUnit_Framework_MockObject_MockObject
+     * @var core_kernel_classes_Resource | MockObject
      */
     private $userResourceMock;
     /**
-     * @var LoggerService | PHPUnit_Framework_MockObject_MockObject
+     * @var LoggerService | MockObject
      */
     private $loggerServiceMock;
 
     /**
-     * @var common_report_Report | PHPUnit_Framework_MockObject_MockObject
+     * @var common_report_Report | MockObject
      */
     private $reportMock;
     /**
-     * @var RemoteTaskSynchroniserInterface | PHPUnit_Framework_MockObject_MockObject
+     * @var RemoteTaskSynchroniserInterface | MockObject
      */
     private $remoteTaskSynchroniserMock;
 
     /**
-     * @var TaskLogBrokerInterface | PHPUnit_Framework_MockObject_MockObject
+     * @var TaskLogBrokerInterface | MockObject
      */
     private $taskLogBrokerMock;
 
     /**
-     * @var QueueDispatcherInterface | PHPUnit_Framework_MockObject_MockObject
+     * @var QueueDispatcherInterface | MockObject
      */
     private $queueDispatcherMock;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -200,6 +201,7 @@ class AbstractWorkerTest extends TestCase
         $this->taskLog->method('setStatus')->willReturn(1);
         $this->reportMock->method('getType')->willReturn(\common_report_Report::TYPE_INFO);
         $this->taskMock->method('__invoke')->willReturn($this->reportMock);
+        $this->taskMock->method('getId')->willReturn('someStringId');
 
         $this->queue->expects($this->once())->method('count');
         $this->taskLogBrokerMock->expects($this->once())->method('deleteById');
@@ -249,7 +251,6 @@ class AbstractWorkerTest extends TestCase
 
         $result = $this->subject->processTask($this->taskMock);
         $this->assertSame('completed', $result);
-
     }
 
     public function testProcessTaskReturnErrorReport()
@@ -294,7 +295,7 @@ class AbstractWorkerTest extends TestCase
 
     public function testProcessCancelledTask()
     {
-        /** @var TaskInterface | PHPUnit_Framework_MockObject_MockObject $task */
+        /** @var TaskInterface | MockObject $task */
         $task = $this->createMock(TaskInterface::class);
         $task
             ->method('getId')
@@ -340,27 +341,17 @@ class AbstractWorkerTest extends TestCase
         $this->assertSame('unknown', $result);
     }
 
-    private function getCallbackTask()
+    private function getCallbackTask(): CallbackTaskInterface
     {
-        $mock = $this
-            ->getMockBuilder(CallbackTaskInterface::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['__invoke', 'getStatus'])
-            ->getMockForAbstractClass();
-        return $mock;
+        return $this->createMock(CallbackTaskInterface::class);
     }
 
     /**
-     * @return TaskInterface | PHPUnit_Framework_MockObject_MockObject
+     * @return TaskInterface | MockObject
      */
     private function getTaskMockCallback()
     {
-        $mock = $this
-            ->getMockBuilder(TaskInterface::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['__invoke', 'getStatus'])
-            ->getMockForAbstractClass();
-        return $mock;
+        return $this->createMock(TaskInterface::class);
     }
 }
 
