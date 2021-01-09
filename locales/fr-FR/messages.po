@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint134\n"
-"PO-Revision-Date: 2020-07-31T09:50:50\n"
+"Project-Id-Version: TAO 3.4.0-sprint137\n"
+"PO-Revision-Date: 2020-09-11T08:30:06\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: fr-FR\n"
@@ -405,11 +405,11 @@ msgstr "Modifier le mot de passe"
 msgid "Change the sign of the current operand"
 msgstr "Changer le signe de l'opérande actuelle"
 
-msgid "Check all"
-msgstr "Cocher tout"
-
 msgid "Check All"
 msgstr "Cocher Tout"
+
+msgid "Check all"
+msgstr "Cocher tout"
 
 msgid "Check-in"
 msgstr "Déposer"
@@ -570,10 +570,10 @@ msgstr "Données importées avec succès."
 msgid "Data imported. Some records are invalid."
 msgstr "Données importées. Certains enregistrements sont invalides."
 
-msgid "Data language"
+msgid "Data Language"
 msgstr "Langue des données"
 
-msgid "Data Language"
+msgid "Data language"
 msgstr "Langue des données"
 
 msgid "Data not imported. All records are invalid."
@@ -906,6 +906,9 @@ msgstr "Revenir"
 msgid "go back to home page"
 msgstr ""
 
+msgid "Go to item"
+msgstr ""
+
 msgid "Height"
 msgstr "Hauteur"
 
@@ -987,10 +990,10 @@ msgstr "Ressource %s importée"
 msgid "impossible to update task status"
 msgstr "Impossible de mettre à jour l'état de la tâche"
 
-msgid "In progress"
+msgid "In Progress"
 msgstr "En cours"
 
-msgid "In Progress"
+msgid "In progress"
 msgstr "En cours"
 
 msgid "Inclusive (AND)"
@@ -1349,13 +1352,16 @@ msgstr "Pas de fichier sélectionné"
 msgid "No files"
 msgstr "Aucun fichier"
 
+msgid "No item found. Please try other search criteria."
+msgstr ""
+
 msgid "no label"
 msgstr "sans étiquette"
 
-msgid "No preview available"
+msgid "No Preview available"
 msgstr "Aucun aperçu disponible"
 
-msgid "No Preview available"
+msgid "No preview available"
 msgstr "Aucun aperçu disponible"
 
 msgid "No results found"
@@ -1489,6 +1495,9 @@ msgid "Please contact your administrator."
 msgstr "Veuillez contacter votre administrateur."
 
 msgid "Please contact your system administrator."
+msgstr ""
+
+msgid "Please define your search in the search panel."
 msgstr ""
 
 msgid "Please download the track and listen offline."
@@ -1750,6 +1759,9 @@ msgstr "Rechercher %s"
 
 msgid "Search by properties"
 msgstr "Recherche par propriétés"
+
+msgid "Search Item"
+msgstr ""
 
 msgid "Search sub-classes"
 msgstr "Chercher des sous-classes"
