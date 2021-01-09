@@ -67,10 +67,6 @@ return [
     'requires' => [
         'generis' => '>=13.4.0',
     ],
-    'models' => [
-        'http://www.tao.lu/Ontologies/TAO.rdf',
-        'http://www.tao.lu/middleware/wfEngine.rdf'
-    ],
     'install' => [
         'rdf' => [
             __DIR__ . '/models/ontology/tao.rdf',
@@ -141,10 +137,6 @@ return [
         ]
     ],
     'update' => Updater::class,
-    'optimizableClasses' => [
-        'http://www.tao.lu/Ontologies/TAO.rdf#Languages',
-        'http://www.tao.lu/Ontologies/TAO.rdf#LanguageUsages'
-    ],
     'managementRole' => TaoRoles::TAO_MANAGER,
     'acl' => [
         [AccessRule::GRANT, TaoRoles::ANONYMOUS,            ['ext' => 'tao','mod' => 'Main', 'act' => 'entry']],
