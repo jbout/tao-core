@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint125\n"
-"PO-Revision-Date: 2020-03-27T12:11:25\n"
+"Project-Id-Version: TAO 3.4.0-sprint137\n"
+"PO-Revision-Date: 2020-09-11T08:31:53\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: nl-NL\n"
@@ -16,10 +16,10 @@ msgstr ""
 msgid ""
 msgstr ""
 
-msgid " AND "
+msgid " and "
 msgstr " en "
 
-msgid " and "
+msgid " AND "
 msgstr " en "
 
 msgid " has been deleted successfully"
@@ -147,6 +147,9 @@ msgstr "Een onderhoudsstatus moet een STATUS hebben: \"%s\" of \"%s\"."
 
 msgid "A message with further instructions has been sent to your email address: %s"
 msgstr "Een bericht met verdere instructies is gestuurd naar uw e-mail adres: %s"
+
+msgid "About"
+msgstr ""
 
 msgid "abs"
 msgstr "abs"
@@ -368,11 +371,11 @@ msgstr "Rekenmachine"
 msgid "Calendar"
 msgstr "Kalender"
 
-msgid "Cancel"
-msgstr "Afbreken"
-
 msgid "cancel"
 msgstr "afbreken"
+
+msgid "Cancel"
+msgstr "Afbreken"
 
 msgid "cancel the action"
 msgstr "breek de actie af"
@@ -402,10 +405,10 @@ msgstr "Wijzig het wachtwoord"
 msgid "Change the sign of the current operand"
 msgstr "Verander het teken van de huidige operator"
 
-msgid "Check all"
+msgid "Check All"
 msgstr "Alles selecteren"
 
-msgid "Check All"
+msgid "Check all"
 msgstr "Alles selecteren"
 
 msgid "Check-in"
@@ -464,6 +467,9 @@ msgstr "Wis de opgeslagen variabelen"
 
 msgid "Close"
 msgstr "Sluiten"
+
+msgid "Close dialog"
+msgstr ""
 
 msgid "Close message"
 msgstr "Bericht sluiten"
@@ -572,6 +578,9 @@ msgstr "Data taal"
 
 msgid "Data not imported. All records are invalid."
 msgstr "Data is niet geïmporteerd. Alle records zijn ongeldig."
+
+msgid "Data source URI"
+msgstr ""
 
 msgid "Date"
 msgstr "Datum"
@@ -739,6 +748,9 @@ msgstr "Fout in syntaxis"
 msgid "Error in value"
 msgstr "Fout in waarde"
 
+msgid "Error: %s"
+msgstr ""
+
 msgid "Examples:"
 msgstr ""
 
@@ -890,6 +902,12 @@ msgstr "Ontvang de geschiedenislijst"
 
 msgid "Go Back"
 msgstr "Ga terug"
+
+msgid "go back to home page"
+msgstr ""
+
+msgid "Go to item"
+msgstr ""
 
 msgid "Height"
 msgstr "Hoogte"
@@ -1080,6 +1098,9 @@ msgstr ""
 msgid "Label"
 msgstr "Label"
 
+msgid "Label Path"
+msgstr ""
+
 msgid "Language"
 msgstr "Taal"
 
@@ -1107,11 +1128,20 @@ msgstr "Lijst"
 msgid "List - Multiple choice - Check box"
 msgstr "Lijst - Meerkeuze - Selectievakje"
 
+msgid "List - Multiple choice - Search input"
+msgstr ""
+
 msgid "List - Single choice - Drop down"
 msgstr "Lijst - Enkele keuze - Keuzelijst"
 
 msgid "List - Single choice - Radio button"
 msgstr "Lijst - Enkele keuze - Radioknop"
+
+msgid "List - Single choice - Search input"
+msgstr ""
+
+msgid "List item URI duplications found"
+msgstr ""
 
 msgid "List values"
 msgstr ""
@@ -1164,8 +1194,20 @@ msgstr "Logi is leeg."
 msgid "Logout"
 msgstr "Afmelden"
 
+msgid "Main Menu"
+msgstr ""
+
+msgid "Maintenance service is already installed."
+msgstr ""
+
 msgid "Maintenance service must have a persistence option."
 msgstr "De onderhoudsservice moet een persistentiemogelijkheid hebben."
+
+msgid "Maintenance service was installed. Platform is disabled."
+msgstr ""
+
+msgid "Maintenance service was installed. Platform is enabled."
+msgstr ""
 
 msgid "Maintenance storage driver is not set"
 msgstr ""
@@ -1310,6 +1352,9 @@ msgstr "Geen bestand geselecteerd"
 msgid "No files"
 msgstr "Geen bestanden"
 
+msgid "No item found. Please try other search criteria."
+msgstr ""
+
 msgid "no label"
 msgstr "geen label"
 
@@ -1368,11 +1413,11 @@ msgstr "van"
 msgid "Off"
 msgstr "Uit"
 
-msgid "Ok"
-msgstr "Ok"
-
 msgid "OK"
 msgstr "OK"
+
+msgid "Ok"
+msgstr "Ok"
 
 msgid "Old Password"
 msgstr "Oud wachtwoord"
@@ -1450,6 +1495,9 @@ msgid "Please contact your administrator."
 msgstr "Gelieve contact op te nemen met uw beheerder."
 
 msgid "Please contact your system administrator."
+msgstr ""
+
+msgid "Please define your search in the search panel."
 msgstr ""
 
 msgid "Please download the track and listen offline."
@@ -1712,6 +1760,9 @@ msgstr "Zoek %s"
 msgid "Search by properties"
 msgstr ""
 
+msgid "Search Item"
+msgstr ""
+
 msgid "Search sub-classes"
 msgstr "Zoek sub-klassen"
 
@@ -1728,11 +1779,11 @@ msgstr ""
 msgid "Security settings"
 msgstr ""
 
-msgid "select"
-msgstr "selecteren"
-
 msgid "Select"
 msgstr "Selecteren"
+
+msgid "select"
+msgstr "selecteren"
 
 msgid "Select a class"
 msgstr ""
@@ -1800,6 +1851,9 @@ msgstr "Grootte"
 
 msgid "Some resources have not been moved: %s"
 msgstr "Sommige resources zijn niet verplaatst: %s"
+
+msgid "Something unexpected happened."
+msgstr ""
 
 msgid "Sources that can embed this platform in an iFrame"
 msgstr ""
@@ -1872,6 +1926,24 @@ msgstr "TAO thuis"
 
 msgid "TAO Login"
 msgstr "TAO login"
+
+msgid "TAO platform is already on live mode since %s"
+msgstr ""
+
+msgid "TAO platform is already on maintenance mode since %s"
+msgstr ""
+
+msgid "TAO platform is live since %s."
+msgstr ""
+
+msgid "TAO platform is now live. It was in maintenance since %s"
+msgstr ""
+
+msgid "TAO platform is now under maintenance. It was in maintenance since %s"
+msgstr ""
+
+msgid "TAO platform is under maintenance since %s"
+msgstr ""
 
 msgid "Task %s has been cancelled, message was not processed."
 msgstr "Taak %s is geannuleerd, bericht is niet verwerkt."
@@ -2167,8 +2239,20 @@ msgstr "Uploaden"
 msgid "Upload into:"
 msgstr "Uploaden naar:"
 
+msgid "URI Path"
+msgstr ""
+
 msgid "Usage: ImportRdf RDF_FILE [MODEL_ID]"
 msgstr "Gebruik: ImportRdf RDF_FILE [MODEL_ID]"
+
+msgid "USAGE: please provide a valid extension id as second parameter"
+msgstr ""
+
+msgid "USAGE: please provide a valid service name as first parameter"
+msgstr ""
+
+msgid "USAGE: please provide the service name as first parameter"
+msgstr ""
 
 msgid "Use a term"
 msgstr ""

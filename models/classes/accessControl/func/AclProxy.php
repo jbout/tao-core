@@ -22,8 +22,6 @@
 namespace oat\tao\model\accessControl\func;
 
 use oat\tao\model\accessControl\AccessControl;
-use common_ext_ExtensionsManager;
-use common_Logger;
 use oat\oatbox\user\User;
 use oat\oatbox\service\ServiceManager;
 
@@ -37,36 +35,24 @@ use oat\oatbox\service\ServiceManager;
  */
 class AclProxy implements AccessControl
 {
-    const SERVICE_ID = 'tao/FuncAccessControl';
-    
-    const CONFIG_KEY_IMPLEMENTATION = 'FuncAccessControl';
-    
-    const FALLBACK_IMPLEMENTATION_CLASS = 'oat\tao\model\accessControl\func\implementation\NoAccess';
-    
-    /**
-     * @var FuncAccessControl
-     */
-    private static $implementation;
+    public const SERVICE_ID = 'tao/FuncAccessControl';
 
     /**
      * @return FuncAccessControl
      */
     protected static function getImplementation()
     {
-        if (is_null(self::$implementation)) {
-            self::$implementation = ServiceManager::getServiceManager()->get(self::SERVICE_ID);
-        }
-        return self::$implementation;
+        return ServiceManager::getServiceManager()->get(self::SERVICE_ID);
     }
     
     /**
      * Change the implementation of the access control permanently
      *
      * @param FuncAccessControl $implementation
+     * @deprecated
      */
     public static function setImplementation(FuncAccessControl $implementation)
     {
-        self::$implementation = $implementation;
         ServiceManager::getServiceManager()->register(self::SERVICE_ID, $implementation);
     }
     

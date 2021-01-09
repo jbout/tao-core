@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: TAO 3.4.0-sprint125\n"
-"PO-Revision-Date: 2020-03-27T12:01:31\n"
+"Project-Id-Version: TAO 3.4.0-sprint137\n"
+"PO-Revision-Date: 2020-09-11T08:30:48\n"
 "Last-Translator: TAO Translation Team <translation@tao.lu>\n"
 "MIME-Version: 1.0\n"
 "Language: it-IT\n"
@@ -148,6 +148,9 @@ msgstr ""
 msgid "A message with further instructions has been sent to your email address: %s"
 msgstr "Un messaggio con ulteriori istruzioni è stato inviato alla tua casella di posta elettronica: %s"
 
+msgid "About"
+msgstr ""
+
 msgid "abs"
 msgstr ""
 
@@ -215,9 +218,6 @@ msgstr ""
 msgid "Advanced search, add filters"
 msgstr ""
 
-msgid "aliases:"
-msgstr ""
-
 msgid "all"
 msgstr "tutto"
 
@@ -282,16 +282,7 @@ msgstr "Sei sicuro di eliminare la risorsa? Si perderanno tutti i dati."
 msgid "Are you sure you want to delete it?"
 msgstr "Sei sicuro di voler cancellare?"
 
-msgid "Argument check failed: %s"
-msgstr ""
-
-msgid "Arguments %s and %s are mutually exclusive"
-msgstr ""
-
 msgid "Arguments separator"
-msgstr ""
-
-msgid "array"
 msgstr ""
 
 msgid "Assign"
@@ -349,9 +340,6 @@ msgstr ""
 msgid "Binary operator modulo"
 msgstr ""
 
-msgid "boolean"
-msgstr ""
-
 msgid "Browse folders:"
 msgstr "Sfoglia le cartelle"
 
@@ -401,17 +389,14 @@ msgstr "Cambia la password"
 msgid "Change the sign of the current operand"
 msgstr ""
 
-msgid "Check all"
-msgstr "Verifica tutto"
-
 msgid "Check All"
 msgstr "Controlla Tutti"
 
+msgid "Check all"
+msgstr "Verifica tutto"
+
 msgid "Check-in"
 msgstr "Check-in"
-
-msgid "choices:"
-msgstr ""
 
 msgid "Choose a value..."
 msgstr ""
@@ -464,6 +449,9 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
+msgid "Close dialog"
+msgstr ""
+
 msgid "Close message"
 msgstr ""
 
@@ -475,9 +463,6 @@ msgstr ""
 
 msgid "Column"
 msgstr "Colonna"
-
-msgid "Commands:"
-msgstr ""
 
 msgid "comment..."
 msgstr "commento..."
@@ -521,9 +506,6 @@ msgstr ""
 msgid "Cosine"
 msgstr ""
 
-msgid "count"
-msgstr ""
-
 msgid "Create"
 msgstr "Creare"
 
@@ -563,14 +545,17 @@ msgstr "Dati importati con successo"
 msgid "Data imported. Some records are invalid."
 msgstr "Dati importati. Alcuni record non sono validi."
 
-msgid "Data Language"
-msgstr "Dati di lingua."
-
 msgid "Data language"
 msgstr "Dati di lingua"
 
+msgid "Data Language"
+msgstr "Dati di lingua."
+
 msgid "Data not imported. All records are invalid."
 msgstr "Dati non importati. Nessun record è valido."
+
+msgid "Data source URI"
+msgstr ""
 
 msgid "Date"
 msgstr "Data"
@@ -586,9 +571,6 @@ msgstr ""
 
 msgid "Default search"
 msgstr "Ricerca di default"
-
-msgid "default:"
-msgstr ""
 
 msgid "Define the default values"
 msgstr "Definisci i valori di default"
@@ -620,9 +602,6 @@ msgstr ""
 
 msgid "Demo Sandbox"
 msgstr "Demo Sandbox"
-
-msgid "Did you mean %s?"
-msgstr ""
 
 msgid "Digit 0"
 msgstr ""
@@ -737,7 +716,7 @@ msgstr ""
 msgid "Error in value"
 msgstr ""
 
-msgid "Examples:"
+msgid "Error: %s"
 msgstr ""
 
 msgid "Exclusive (OR)"
@@ -874,9 +853,6 @@ msgstr ""
 msgid "Fuzzy Matching"
 msgstr "Accoppiamento sfocato"
 
-msgid "generated-value"
-msgstr ""
-
 msgid "Generis Form"
 msgstr ""
 
@@ -888,6 +864,12 @@ msgstr ""
 
 msgid "Go Back"
 msgstr "Ritorna"
+
+msgid "go back to home page"
+msgstr ""
+
+msgid "Go to item"
+msgstr ""
 
 msgid "Height"
 msgstr "Altezza"
@@ -930,9 +912,6 @@ msgstr "Identificatore"
 
 msgid "If you do not wish to reset your password, just ignore this email and your password will remain the same."
 msgstr "Se non desideri reimpostare la tua password, ignora questa mail. La password resterà la stessa."
-
-msgid "Implications failed:"
-msgstr ""
 
 msgid "Import"
 msgstr "Importa"
@@ -1057,9 +1036,6 @@ msgstr ""
 msgid "Invalid input for function"
 msgstr ""
 
-msgid "Invalid JSON config file: %s"
-msgstr ""
-
 msgid "Invalid login or password. Please try again."
 msgstr "Password di login non valida. Riprovare"
 
@@ -1069,14 +1045,14 @@ msgstr ""
 msgid "invalid regular expression"
 msgstr "espressione regolare non valida"
 
-msgid "Invalid values:"
-msgstr ""
-
 msgid "items per page"
 msgstr ""
 
 msgid "Label"
 msgstr "Etichetta"
+
+msgid "Label Path"
+msgstr ""
 
 msgid "Language"
 msgstr "Lingua"
@@ -1105,11 +1081,20 @@ msgstr "Elenco"
 msgid "List - Multiple choice - Check box"
 msgstr "Lista - Scelta multipla - Controlla box"
 
+msgid "List - Multiple choice - Search input"
+msgstr ""
+
 msgid "List - Single choice - Drop down"
 msgstr "Lista - Scelta singola - Scorri giù"
 
 msgid "List - Single choice - Radio button"
 msgstr "Lista - Scelta singola - Tasto radio"
+
+msgid "List - Single choice - Search input"
+msgstr ""
+
+msgid "List item URI duplications found"
+msgstr ""
 
 msgid "List values"
 msgstr ""
@@ -1162,7 +1147,19 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
+msgid "Main Menu"
+msgstr ""
+
+msgid "Maintenance service is already installed."
+msgstr ""
+
 msgid "Maintenance service must have a persistence option."
+msgstr ""
+
+msgid "Maintenance service was installed. Platform is disabled."
+msgstr ""
+
+msgid "Maintenance service was installed. Platform is enabled."
 msgstr ""
 
 msgid "Maintenance storage driver is not set"
@@ -1308,13 +1305,16 @@ msgstr "Nessun file selezionato"
 msgid "No files"
 msgstr "Nessun file"
 
+msgid "No item found. Please try other search criteria."
+msgstr ""
+
 msgid "no label"
 msgstr "nessuna etichetta"
 
-msgid "No Preview available"
+msgid "No preview available"
 msgstr "Nessuna anteprima disponibile"
 
-msgid "No preview available"
+msgid "No Preview available"
 msgstr "Nessuna anteprima disponibile"
 
 msgid "No results found"
@@ -1324,12 +1324,6 @@ msgid "No Task yet"
 msgstr ""
 
 msgid "Node duplication has failed"
-msgstr ""
-
-msgid "Not enough arguments following: %s"
-msgstr ""
-
-msgid "Not enough non-option arguments: got %s, need at least %s"
 msgstr ""
 
 msgid "Not started"
@@ -1354,9 +1348,6 @@ msgstr ""
 msgid "Nth root"
 msgstr ""
 
-msgid "number"
-msgstr ""
-
 msgid "Number of elements"
 msgstr "Numero di elementi"
 
@@ -1366,11 +1357,11 @@ msgstr "di"
 msgid "Off"
 msgstr ""
 
-msgid "Ok"
-msgstr "Sì"
-
 msgid "OK"
 msgstr "SI"
+
+msgid "Ok"
+msgstr "Sì"
 
 msgid "Old Password"
 msgstr "Vecchia password"
@@ -1448,6 +1439,9 @@ msgid "Please contact your administrator."
 msgstr ""
 
 msgid "Please contact your system administrator."
+msgstr ""
+
+msgid "Please define your search in the search panel."
 msgstr ""
 
 msgid "Please download the track and listen offline."
@@ -1592,9 +1586,6 @@ msgstr "Richiesta via Email di reset della password"
 msgid "require notification ID"
 msgstr ""
 
-msgid "required"
-msgstr ""
-
 msgid "required length"
 msgstr "lunghezza richiesta"
 
@@ -1710,6 +1701,9 @@ msgstr "Cerca %s"
 msgid "Search by properties"
 msgstr ""
 
+msgid "Search Item"
+msgstr ""
+
 msgid "Search sub-classes"
 msgstr "Cerca sotto-classi"
 
@@ -1799,6 +1793,9 @@ msgstr "Dimensione"
 msgid "Some resources have not been moved: %s"
 msgstr ""
 
+msgid "Something unexpected happened."
+msgstr ""
+
 msgid "Sources that can embed this platform in an iFrame"
 msgstr ""
 
@@ -1818,9 +1815,6 @@ msgid "Store"
 msgstr ""
 
 msgid "Store the value a variable"
-msgstr ""
-
-msgid "string"
 msgstr ""
 
 msgid "Submit"
@@ -1870,6 +1864,24 @@ msgstr "TAO Home"
 
 msgid "TAO Login"
 msgstr "Accesso TAO"
+
+msgid "TAO platform is already on live mode since %s"
+msgstr ""
+
+msgid "TAO platform is already on maintenance mode since %s"
+msgstr ""
+
+msgid "TAO platform is live since %s."
+msgstr ""
+
+msgid "TAO platform is now live. It was in maintenance since %s"
+msgstr ""
+
+msgid "TAO platform is now under maintenance. It was in maintenance since %s"
+msgstr ""
+
+msgid "TAO platform is under maintenance since %s"
+msgstr ""
 
 msgid "Task %s has been cancelled, message was not processed."
 msgstr ""
@@ -2018,9 +2030,6 @@ msgstr ""
 msgid "Tokenizer"
 msgstr "Tokenizer"
 
-msgid "Too many non-option arguments: got %s, maximum of %s"
-msgstr ""
-
 msgid "Too many suggestions match your query. Only a few are listed"
 msgstr "La tua richiesta contiene troppe proposte. Solo alcune sono elencate"
 
@@ -2165,8 +2174,20 @@ msgstr "Carica"
 msgid "Upload into:"
 msgstr "Carica in:"
 
+msgid "URI Path"
+msgstr ""
+
 msgid "Usage: ImportRdf RDF_FILE [MODEL_ID]"
 msgstr "Utilizzo: ImportRdf RDF_FILE [MODEL_ID]"
+
+msgid "USAGE: please provide a valid extension id as second parameter"
+msgstr ""
+
+msgid "USAGE: please provide a valid service name as first parameter"
+msgstr ""
+
+msgid "USAGE: please provide the service name as first parameter"
+msgstr ""
 
 msgid "Use a term"
 msgstr ""

@@ -26,29 +26,19 @@ use oat\tao\model\user\TaoRoles;
 use oat\tao\model\accessControl\func\FuncAccessControl;
 use oat\tao\model\accessControl\func\AccessRule;
 use common_ext_ExtensionsManager;
-use common_session_SessionManager;
-use oat\tao\model\TaoOntology;
-use oat\taoDevTools\actions\ControllerMap;
 use oat\tao\model\accessControl\func\FuncHelper;
 use oat\tao\helpers\ControllerHelper;
 use oat\oatbox\user\User;
 use oat\oatbox\service\ConfigurableService;
 
 /**
- * Simple ACL Implementation deciding whenever or not to allow access
- * strictly by the BASEUSER role and a whitelist
- *
- * Not to be used in production, since testtakers cann access the backoffice
- *
- * @access public
- * @author Joel Bout, <joel@taotesting.com>
- * @package tao
-
+ * DO NOT USE, will leave the system vunerable to exploits
+ * @deprecated
  */
 class SimpleAccess extends ConfigurableService implements FuncAccessControl
 {
     
-    const WHITELIST_KEY = 'SimpleAclWhitelist';
+    private const WHITELIST_KEY = 'SimpleAclWhitelist';
     
     private $controllers = [];
     
